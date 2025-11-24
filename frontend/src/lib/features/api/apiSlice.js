@@ -49,17 +49,12 @@ const baseQuery = fetchBaseQuery({
 
 const baseQueryWithReauth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
-
-  // 🛑 FIX: Check if the request URL is 'auth/login/'
-  // If it is, return the error immediately. Do NOT try to refresh.
-  // We handle both cases where 'args' might be a string or an object.
   const requestUrl = typeof args === 'string' ? args : args.url;
   
   if (requestUrl.includes('auth/login/')) {
     return result; 
   }
 
-  // Standard Logic for all other protected routes
   if (result.error && result.error.status === 401) {
     const refreshToken = typeof window !== 'undefined' ? localStorage.getItem('refresh_token') : null;
 
@@ -75,17 +70,14 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
       );
 
       if (refreshResult.data) {
-        // Refresh successful - save new token and retry original request
         localStorage.setItem('access_token', refreshResult.data.access);        
         result = await baseQuery(args, api, extraOptions);
       } else {
-        // Refresh failed - Logout
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         window.location.href = '/';
       }
     } else {
-      // No refresh token - Logout
       localStorage.removeItem('access_token');
       window.location.href = '/';
     }
@@ -97,7 +89,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Post'],
+  tagTypes: ['User', 'Post'],
   endpoints: (builder) => ({
     
     // Auth
@@ -114,6 +106,12 @@ export const apiSlice = createApi({
         method: 'POST',
         body: userData,
       }),
+    }),
+
+    // users
+    getUser: builder.query({
+      query: () => 'auth/me/',
+      providesTags: ['User'],
     }),
 
     // Feed
@@ -145,6 +143,7 @@ export const apiSlice = createApi({
 export const { 
   useLoginMutation, 
   useRegisterMutation, 
+  useGetUserQuery,
   useGetPostsQuery, 
   useCreatePostMutation,
   useLikePostMutation

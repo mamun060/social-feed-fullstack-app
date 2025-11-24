@@ -1,3 +1,4 @@
+"use client";
 import CreatePostBox from "@/components/feed/CreatePostBox";
 import FeedContainer from "@/components/feed/FeedContainer";
 import PostCard from "@/components/feed/PostCard";
@@ -7,6 +8,7 @@ import MobileBottomNav from "@/components/layouts/MobileBottomNav";
 import MobileHeader from "@/components/layouts/MobileHeader";
 import Navbar from "@/components/layouts/Navbar";
 import RightSidebar from "@/components/layouts/RightSidebar";
+import { useGetPostsQuery } from "@/lib/features/api/apiSlice";
 
 const dummyPosts = [
   {
@@ -28,6 +30,9 @@ const dummyPosts = [
 ];
 
 export default function Home() {
+  const {data, isSuccess, isLoading, isError, error} = useGetPostsQuery();
+  // console.log(data.results);
+  
   return (
     <div className="_layout _layout_main_wrapper">
       <div className="_main_layout">
@@ -49,7 +54,7 @@ export default function Home() {
                 <FeedContainer>
                   <StoriesSection />
                   <CreatePostBox />
-                  {dummyPosts.map((post) => (
+                  {data?.results?.map((post) => (
                     <PostCard key={post.id} postData={post} />
                   ))}
                 </FeedContainer>

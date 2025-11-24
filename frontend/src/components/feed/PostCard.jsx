@@ -10,14 +10,46 @@ const PostCard = ({ postData }) => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  // Destructure props
   const {
-    author = "Unknown Author",
-    timeAgo = "just now",
-    title = "",
-    postImage = "/images/timeline_img.png",
-    stats = { comments: 0, shares: 0, totalReactions: 0 },
+    id,
+    author: authorObj = {},
+    content = "",
+    image: postImage = "/images/timeline_img.png",
+    visibility = "public",
+    created_at,
+    likes_count = 0,
+    is_liked = false,
+    comments_count = 0,
   } = postData || {};
+
+  const author = authorObj
+    ? `${authorObj.first_name || ""} ${authorObj.last_name || ""}`.trim() || authorObj.username
+    : "Unknown Author";
+
+  const formatTimeAgo = (iso) => {
+    if (!iso) return "just now";
+    const then = new Date(iso).getTime();
+    const diff = Date.now() - then;
+    const sec = Math.floor(diff / 1000);
+    if (sec < 60) return `${sec}s`;
+    const min = Math.floor(sec / 60);
+    if (min < 60) return `${min}m`;
+    const hr = Math.floor(min / 60);
+    if (hr < 24) return `${hr}h`;
+    const days = Math.floor(hr / 24);
+    return `${days}d`;
+  };
+
+  const title = content ? content.split("\n")[0].slice(0, 120) : "";
+  const [timeAgo, setTimeAgo] = React.useState("just now");
+  React.useEffect(() => {
+    const t = formatTimeAgo(created_at);
+    setTimeAgo(t);
+  }, [created_at]);
+
+  const totalReactions = likes_count ?? 0;
+  const comments = comments_count ?? 0;
+  const shares = postData?.shares ?? 0;
 
   return (
     <div className="_feed_inner_timeline_post_area _b_radious6 _padd_b24 _padd_t24 _mar_b16">
@@ -26,7 +58,7 @@ const PostCard = ({ postData }) => {
           <div className="_feed_inner_timeline_post_box">
             <div className="_feed_inner_timeline_post_box_image">
               <img
-                src="/images/post_img.png"
+                src="/images/chat4_img.png"
                 alt={author}
                 className="_post_img"
               />
@@ -34,7 +66,7 @@ const PostCard = ({ postData }) => {
             <div className="_feed_inner_timeline_post_box_txt">
               <h4 className="_feed_inner_timeline_post_box_title">{author}</h4>
               <p className="_feed_inner_timeline_post_box_para">
-                {timeAgo} .<a href="#0">Public</a>
+                {timeAgo} .<span>{visibility ?? ""}</span>
               </p>
             </div>
           </div>
@@ -222,17 +254,17 @@ const PostCard = ({ postData }) => {
             className="_react_img _rect_img_mbl_none"
           />
           <p className="_feed_inner_timeline_total_reacts_para">
-            {stats.totalReactions > 5 ? "9+" : stats.totalReactions}
-          </p>
+            {totalReactions > 5 ? "9+" : totalReactions}
+          </p> 
         </div>
         <div className="_feed_inner_timeline_total_reacts_txt">
           <p className="_feed_inner_timeline_total_reacts_para1">
             <a href="#0">
-              <span>{stats.comments}</span> Comment
+              {/* <span>{stats.comments}</span> Comment */}
             </a>
           </p>
           <p className="_feed_inner_timeline_total_reacts_para2">
-            <span>{stats.shares}</span> Share
+            {/* <span>{stats.shares}</span> Share */}
           </p>
         </div>
       </div>

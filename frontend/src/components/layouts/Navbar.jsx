@@ -2,10 +2,11 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useDispatch } from 'react-redux';
-import { apiSlice } from '@/lib/features/api/apiSlice';
+import { apiSlice, useGetUserQuery } from '@/lib/features/api/apiSlice';
 import { useRouter } from 'next/navigation';
 
 const Navbar = () => {
+    const {data: user, isLoading, isError} = useGetUserQuery();
     const dispatch = useDispatch();
     const router = useRouter();
     const [showNotifications, setShowNotifications] = useState(false);
@@ -14,6 +15,9 @@ const Navbar = () => {
         setShowNotifications(!showNotifications);
         if (showProfileDropdown) setShowProfileDropdown(false);
     };
+
+    console.log(user);
+    
 
     const toggleProfile = () => {
         setShowProfileDropdown(!showProfileDropdown);
@@ -28,7 +32,6 @@ const Navbar = () => {
         dispatch(apiSlice.util.resetApiState());
         router.push("/");
     };
-
 
     return (
         <nav className="navbar navbar-expand-lg navbar-light _header_nav _padd_t10">
@@ -184,7 +187,7 @@ const Navbar = () => {
                             <img src="/images/profile.png" alt="Image" className="_nav_profile_img" />
                         </div>
                         <div onClick={toggleProfile} className="_header_nav_dropdown">
-                            <p className="_header_nav_para">Dylan Field</p>
+                            <p className="_header_nav_para">{user?.first_name || "Unknown"} {user?.last_name || "User"}</p>
                             {/* Profile Dropdown Trigger */}
                             <button
                                 id="_profile_drop_show_btn"
