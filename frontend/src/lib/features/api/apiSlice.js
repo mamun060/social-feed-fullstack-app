@@ -1,10 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-// 1. Base Query: Standard request handler
 const baseQuery = fetchBaseQuery({
-  baseUrl: 'http://127.0.0.1:8000/api/v1/', // Your Django URL
+  baseUrl: process.env.NEXT_PUBLIC_APP_API_URL,
   prepareHeaders: (headers) => {
-    // Only access localStorage in the browser
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('access_token');
       if (token) {
@@ -15,16 +13,57 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-// 2. Wrapper Query: Handles Automatic Refresh Logic
+// Handles Automatic Refresh Logic
+// const baseQueryWithReauth = async (args, api, extraOptions) => {
+//   let result = await baseQuery(args, api, extraOptions);
+
+//   if (result.error && result.error.status === 401) {
+//     const refreshToken = typeof window !== 'undefined' ? localStorage.getItem('refresh_token') : null;
+
+//     if (refreshToken) {
+//       const refreshResult = await baseQuery(
+//         {
+//           url: 'auth/refresh/',
+//           method: 'POST',
+//           body: { refresh: refreshToken },
+//         },
+//         api,
+//         extraOptions
+//       );
+
+//       if (refreshResult.data) {
+//         localStorage.setItem('access_token', refreshResult.data.access);        
+//         result = await baseQuery(args, api, extraOptions);
+//       } else {
+//         localStorage.removeItem('access_token');
+//         localStorage.removeItem('refresh_token');
+//         window.location.href = '/';
+//       }
+//     } else {
+//       localStorage.removeItem('access_token');
+//       window.location.href = '/';
+//     }
+//   }
+//   return result;
+// };
+
 const baseQueryWithReauth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
 
-  // If error is 401 (Unauthorized), try to refresh
+  // 🛑 FIX: Check if the request URL is 'auth/login/'
+  // If it is, return the error immediately. Do NOT try to refresh.
+  // We handle both cases where 'args' might be a string or an object.
+  const requestUrl = typeof args === 'string' ? args : args.url;
+  
+  if (requestUrl.includes('auth/login/')) {
+    return result; 
+  }
+
+  // Standard Logic for all other protected routes
   if (result.error && result.error.status === 401) {
     const refreshToken = typeof window !== 'undefined' ? localStorage.getItem('refresh_token') : null;
 
     if (refreshToken) {
-      // Call refresh endpoint manually
       const refreshResult = await baseQuery(
         {
           url: 'auth/refresh/',
@@ -36,44 +75,42 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
       );
 
       if (refreshResult.data) {
-        // Success! Store the new token
-        localStorage.setItem('access_token', refreshResult.data.access);
-        
-        // Retry the original request
+        // Refresh successful - save new token and retry original request
+        localStorage.setItem('access_token', refreshResult.data.access);        
         result = await baseQuery(args, api, extraOptions);
       } else {
-        // Refresh failed (Session expired completely)
+        // Refresh failed - Logout
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
-        window.location.href = '/login';
+        window.location.href = '/';
       }
     } else {
-      // No refresh token available
-      localStorage.removeItem('access_token'); // Clean up potentially stale token
-      window.location.href = '/login';
+      // No refresh token - Logout
+      localStorage.removeItem('access_token');
+      window.location.href = '/';
     }
   }
   return result;
 };
 
-// 3. Define Endpoints
+// Define Endpoints
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Post'], // Used for automatic cache invalidation
+  tagTypes: ['Post'],
   endpoints: (builder) => ({
     
     // Auth
     login: builder.mutation({
       query: (credentials) => ({
-        url: 'auth/login/',
+        url: '/auth/login/',
         method: 'POST',
         body: credentials,
       }),
     }),
     register: builder.mutation({
       query: (userData) => ({
-        url: 'auth/register/',
+        url: '/auth/register/',
         method: 'POST',
         body: userData,
       }),
@@ -81,26 +118,26 @@ export const apiSlice = createApi({
 
     // Feed
     getPosts: builder.query({
-      query: () => 'posts/',
-      providesTags: ['Post'], // If 'Post' tag is invalidated, this refetches
+      query: () => '/posts/',
+      providesTags: ['Post'],
     }),
 
     createPost: builder.mutation({
       query: (formData) => ({
-        url: 'posts/',
+        url: '/posts/',
         method: 'POST',
-        body: formData, // FormData automatically handles Content-Type multipart/form-data
+        body: formData,
       }),
-      invalidatesTags: ['Post'], // This triggers getPosts to run again automatically
+      invalidatesTags: ['Post'],
     }),
 
     // Like
     likePost: builder.mutation({
       query: (id) => ({
-        url: `posts/${id}/like/`,
+        url: `/posts/${id}/like/`,
         method: 'POST',
       }),
-      invalidatesTags: ['Post'], // Refetch to update like count/status
+      invalidatesTags: ['Post'],
     }),
   }),
 });
@@ -112,3 +149,4 @@ export const {
   useCreatePostMutation,
   useLikePostMutation
 } = apiSlice;
+

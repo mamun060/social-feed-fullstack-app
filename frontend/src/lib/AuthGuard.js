@@ -8,23 +8,16 @@ export default function AuthGuard({ children }) {
   const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
-    // 1. Check token in LocalStorage
     const token = localStorage.getItem("access_token");
-
     if (!token) {
-      // 2. Redirect if not found
-      router.push("/login");
+      router.push("/");
     } else {
-      // 3. Allow access
       setIsAuthorized(true);
     }
   }, [router]);
 
-  // 4. Show nothing (or a skeleton) while checking to prevent "Flash of Content"
   if (!isAuthorized) {
     return <div className="flex h-screen items-center justify-center">Loading...</div>;
-
   }
-
   return <>{children}</>;
 }

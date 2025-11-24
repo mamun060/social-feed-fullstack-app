@@ -1,18 +1,12 @@
 "use client";
 import React, { useState } from 'react';
 import Link from 'next/link';
-// Ideally, use next/image for optimization, but standard <img> is fine for direct conversion.
-// import Image from 'next/image'; 
+import { useDispatch } from 'react-redux';
 
 const Navbar = () => {
-    // State to manage the visibility of custom dropdowns
-    // Note: We assume your custom CSS uses a class like '_active' or 'show' 
-    // to display these dropdowns when the state is true. 
+    const dispatch = useDispatch();
     const [showNotifications, setShowNotifications] = useState(false);
     const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-
-    // Helper to close dropdowns when clicking outside (optional enhancement, 
-    // implemented simply here by toggling on click)
     const toggleNotifications = () => {
         setShowNotifications(!showNotifications);
         if (showProfileDropdown) setShowProfileDropdown(false);
@@ -23,19 +17,25 @@ const Navbar = () => {
         if (showNotifications) setShowNotifications(false);
     };
 
+    const handleLogout = () => {
+        const confirmLogout = confirm("Are you sure you want to logout?");
+        if (!confirmLogout) return;
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        dispatch(apiSlice.util.resetApiState());
+        router.push("/");
+    };
+
 
     return (
         <nav className="navbar navbar-expand-lg navbar-light _header_nav _padd_t10">
             <div className="container _custom_container">
                 <div className="_logo_wrap">
                     <Link href="/feed" className="navbar-brand">
-                        {/* Ensure assets folder is in your '/public' directory */}
                         <img src="/images/logo.svg" alt="Logo" className="_nav_logo" />
                     </Link>
                 </div>
-                {/* NOTE: This toggler requires Bootstrap JS to be loaded in your project 
-                  to function correctly on mobile.
-                */}
+
                 <button className="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"> <span className="navbar-toggler-icon"></span>
                 </button>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
@@ -78,11 +78,6 @@ const Navbar = () => {
                                 <span className="_counting">6</span>
                             </span>
 
-                            {/* Notification Dropdown Body */}
-                            {/* NOTE: We are conditionally adding an '_active' class based on state. 
-                                Ensure your CSS uses this class to show the dropdown. 
-                                Alternatively, use conditional rendering: {showNotifications && (...)}
-                             */}
                             <div id="_notify_drop" className={`_notification_dropdown ${showNotifications ? '_active' : ''}`}>
                                 <div className="_notifications_content">
                                     <h4 className="_notifications_content_title">Notifications</h4>
@@ -174,7 +169,7 @@ const Navbar = () => {
                             </div>
                         </li>
                         <li className="nav-item _header_nav_item">
-                            <Link href="/chat" className="nav-link _header_nav_link" aria-current="page">
+                            <Link href="#" className="nav-link _header_nav_link" aria-current="page">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="22" fill="none" viewBox="0 0 23 22">
                                     <path fill="#000" fillOpacity=".6" fillRule="evenodd" d="M11.43 0c2.96 0 5.743 1.143 7.833 3.22 4.32 4.29 4.32 11.271 0 15.562C17.145 20.886 14.293 22 11.405 22c-1.575 0-3.16-.33-4.643-1.012-.437-.174-.847-.338-1.14-.338-.338.002-.793.158-1.232.308-.9.307-2.022.69-2.852-.131-.826-.822-.445-1.932-.138-2.826.152-.44.307-.895.307-1.239 0-.282-.137-.642-.347-1.161C-.57 11.46.322 6.47 3.596 3.22A11.04 11.04 0 0111.43 0zm0 1.535A9.5 9.5 0 004.69 4.307a9.463 9.463 0 00-1.91 10.686c.241.592.474 1.17.474 1.77 0 .598-.207 1.201-.39 1.733-.15.439-.378 1.1-.231 1.245.143.147.813-.085 1.255-.235.53-.18 1.133-.387 1.73-.391.597 0 1.161.225 1.758.463 3.655 1.679 7.98.915 10.796-1.881 3.716-3.693 3.716-9.7 0-13.391a9.5 9.5 0 00-6.74-2.77zm4.068 8.867c.57 0 1.03.458 1.03 1.024 0 .566-.46 1.023-1.03 1.023a1.023 1.023 0 11-.01-2.047h.01zm-4.131 0c.568 0 1.03.458 1.03 1.024 0 .566-.462 1.023-1.03 1.023a1.03 1.03 0 01-1.035-1.024c0-.566.455-1.023 1.025-1.023h.01zm-4.132 0c.568 0 1.03.458 1.03 1.024 0 .566-.462 1.023-1.03 1.023a1.022 1.022 0 11-.01-2.047h.01z" clipRule="evenodd" />
                                 </svg> <span className="_counting">2</span>
@@ -185,23 +180,21 @@ const Navbar = () => {
                         <div className="_header_nav_profile_image">
                             <img src="/images/profile.png" alt="Image" className="_nav_profile_img" />
                         </div>
-                        <div className="_header_nav_dropdown">
+                        <div onClick={toggleProfile} className="_header_nav_dropdown">
                             <p className="_header_nav_para">Dylan Field</p>
                             {/* Profile Dropdown Trigger */}
                             <button
                                 id="_profile_drop_show_btn"
                                 className="_header_nav_dropdown_btn _dropdown_toggle"
                                 type="button"
-                                onClick={toggleProfile}
+                                
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" fill="none" viewBox="0 0 10 6">
                                     <path fill="#112032" d="M5 5l.354.354L5 5.707l-.354-.353L5 5zm4.354-3.646l-4 4-.708-.708 4-4 .708.708zm-4.708 4l-4-4 .708-.708 4 4-.708.708z" />
                                 </svg>
                             </button>
                         </div>
-                        {/* Profile Dropdown Body */}
-                        {/* NOTE: Conditionally adding '_active' class based on state. */}
-                        <div id="_prfoile_drop" className={`_nav_profile_dropdown _profile_dropdown ${showProfileDropdown ? '_active' : ''}`}>
+                        <div className={`_nav_profile_dropdown _profile_dropdown ${showProfileDropdown ? 'show' : ''}`}>
                             <div className="_nav_profile_dropdown_info">
                                 <div className="_nav_profile_dropdown_image">
                                     <img src="/images/profile.png" alt="Image" className="_nav_drop_img" />
@@ -251,7 +244,7 @@ const Navbar = () => {
                                     </a>
                                 </li>
                                 <li className="_nav_dropdown_list_item">
-                                    <a href="#0" className="_nav_dropdown_link">
+                                    <div onClick={handleLogout} className="_nav_dropdown_link">
                                         <div className="_nav_drop_info">
                                             <span>
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="none" viewBox="0 0 19 19">
@@ -265,7 +258,7 @@ const Navbar = () => {
                                                 <path fill="#112032" d="M5 5l.354.354L5.707 5l-.353-.354L5 5zM1.354 9.354l4-4-.708-.708-4 4 .708.708zm4-4.708l-4-4-.708.708 4 4 .708-.708z" opacity=".5" />
                                             </svg>
                                         </button>
-                                    </a>
+                                    </div>
                                 </li>
                             </ul>
                         </div>

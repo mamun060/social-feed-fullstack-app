@@ -1,8 +1,56 @@
+"use client";
+import React, { useState } from 'react';
 import Link from 'next/link';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import { useLoginMutation } from '@/lib/features/api/apiSlice';
+
 
 const LoginPage = () => {
-  
+  const router = useRouter();
+  const [login, { isLoading }] = useLoginMutation();
+
+  const [formData, setFormData] = useState({
+    email: '', 
+    password: ''
+  });
+
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMsg(""); // Clear previous errors
+
+    try {
+      // 1. ATTEMPT LOGIN
+      // .unwrap() is CRITICAL here. It makes sure that if the API returns 400/401,
+      // it throws an error immediately and jumps to the 'catch' block.
+      const res = await login(formData).unwrap();
+
+      // 2. IF SUCCESSFUL (Code reaches here only if password is correct)
+      console.log("Login Successful");
+      localStorage.setItem("access_token", res.access);
+      localStorage.setItem("refresh_token", res.refresh);
+
+      // 3. REDIRECT
+      router.push("/feed");
+
+    } catch (err) {
+      // 4. IF FAILED (Wrong password/username)
+      // The code jumps here. router.push() NEVER runs.
+      console.error("Login Failed:", err);
+      
+      if (err.status === 401) {
+        setErrorMsg("Invalid username or password.");
+      } else {
+        setErrorMsg("Something went wrong. Please check your connection.");
+      }
+    }
+  };
+
   return (
     <section className="_social_login_wrapper _layout_main_wrapper">
       <div className="_shape_one">
@@ -34,58 +82,66 @@ const LoginPage = () => {
                 </div>
                 <p className="_social_login_content_para _mar_b8">Welcome back</p>
                 <h4 className="_social_login_content_title _titl4 _mar_b50">Login to your account</h4>
-                <button type="button" className="_social_login_content_btn _mar_b40">
-                  <img src="/images/google.svg" alt="Google sign-in" className="_google_img" /> <span>Or sign-in with google</span>
-                </button>
-                <div className="_social_login_content_bottom_txt _mar_b40"> <span>Or</span>
-                </div>
-                <form className="_social_login_form">
+
+                {/* ERROR MESSAGE DISPLAY */}
+                {errorMsg && (
+                    <div style={{ color: '#dc3545', marginBottom: '20px', padding: '10px', backgroundColor: '#f8d7da', borderRadius: '4px', fontSize: '14px' }}>
+                        {errorMsg}
+                    </div>
+                )}
+
+                <form className="_social_login_form" onSubmit={handleSubmit}>
                   <div className="row">
                     <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                       <div className="_social_login_form_input _mar_b14">
-                        <label className="_social_login_label _mar_b8">Email</label>
-                        <input type="email" className="form-control _social_login_input" />
+                        <label className="_social_login_label _mar_b8">Username</label>
+                        <input 
+                            type="text" 
+                            name="username"
+                            value={formData.username}
+                            onChange={handleChange}
+                            className="form-control _social_login_input" 
+                            placeholder="Enter your username"
+                            required
+                        />
                       </div>
                     </div>
                     <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                       <div className="_social_login_form_input _mar_b14">
                         <label className="_social_login_label _mar_b8">Password</label>
-                        <input type="password" className="form-control _social_login_input" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-lg-6 col-xl-6 col-md-6 col-sm-12">
-                      <div className="form-check _social_login_form_check">
                         <input 
-                          className="form-check-input _social_login_form_check_input" 
-                          type="radio" 
-                          name="flexRadioDefault" 
-                          id="flexRadioDefault2" 
-                          defaultChecked 
+                            type="password" 
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            className="form-control _social_login_input" 
+                            placeholder="Enter your password"
+                            required
                         />
-                        <label className="form-check-label _social_login_form_check_label" htmlFor="flexRadioDefault2">Remember me</label>
-                      </div>
-                    </div>
-                    <div className="col-lg-6 col-xl-6 col-md-6 col-sm-12">
-                      <div className="_social_login_form_left">
-                        <p className="_social_login_form_left_para">Forgot password?</p>
                       </div>
                     </div>
                   </div>
+                  
                   <div className="row">
                     <div className="col-lg-12 col-md-12 col-xl-12 col-sm-12">
                       <div className="_social_login_form_btn _mar_t40 _mar_b60">
-                        <button type="button" className="_social_login_form_btn_link _btn1">Login now</button>
+                        <button 
+                            type="submit" 
+                            disabled={isLoading}
+                            className="_social_login_form_btn_link _btn1"
+                        >
+                            {isLoading ? 'Checking...' : 'Login now'}
+                        </button>
                       </div>
                     </div>
                   </div>
                 </form>
+
                 <div className="row">
                   <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                     <div className="_social_login_bottom_txt">
-                      <p className="_social_login_bottom_txt_para">Dont have an account ? 
-                        <Link href="/register">Create New Account</Link>
+                      <p className="_social_login_bottom_txt_para">Dont have an account?  
+                        <Link href="/register" style={{marginLeft: '5px'}}>Create New Account</Link>
                       </p>
                     </div>
                   </div>
