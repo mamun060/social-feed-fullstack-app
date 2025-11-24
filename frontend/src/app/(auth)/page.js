@@ -2,6 +2,7 @@ import Link from 'next/link';
 import React from 'react';
 
 const LoginPage = () => {
+  
   return (
     <section className="_social_login_wrapper _layout_main_wrapper">
       <div className="_shape_one">

@@ -136,3 +136,24 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS Config 
 CORS_ALLOW_ALL_ORIGINS = True
+
+# CORS_ALLOW_ALL_ORIGINS = False # Disable this!
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000", # Your Next.js Frontend
+# ]
+# CORS_ALLOW_CREDENTIALS = True # IMPORTANT: Allows cookies to be sent
+
+# # 2. Simple JWT Config (We will store the Refresh token in a cookie)
+# from datetime import timedelta
+# SIMPLE_JWT = {
+#     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+#     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+#     'ROTATE_REFRESH_TOKENS': True,
+#     'BLACKLIST_AFTER_ROTATION': True,
+#     # We will handle cookie setting manually in views for maximum control
+# }
+
+# # 3. CSRF Trusted Origins
+# CSRF_TRUSTED_ORIGINS = [
+#     "http://localhost:3000",
+# ]

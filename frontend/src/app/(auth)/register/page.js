@@ -89,7 +89,7 @@ const RegistrationPage = () => {
                                     <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                                         <div className="_social_registration_bottom_txt">
                                            
-                                            <p className="_social_registration_bottom_txt_para">Dont have an account? <Link href="/login">Login Now</Link>
+                                            <p className="_social_registration_bottom_txt_para">Dont have an account? <Link href="/">Login Now</Link>
                                             </p>
                                         </div>
                                     </div>
