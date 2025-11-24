@@ -2,9 +2,12 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useDispatch } from 'react-redux';
+import { apiSlice } from '@/lib/features/api/apiSlice';
+import { useRouter } from 'next/navigation';
 
 const Navbar = () => {
     const dispatch = useDispatch();
+    const router = useRouter();
     const [showNotifications, setShowNotifications] = useState(false);
     const [showProfileDropdown, setShowProfileDropdown] = useState(false);
     const toggleNotifications = () => {
