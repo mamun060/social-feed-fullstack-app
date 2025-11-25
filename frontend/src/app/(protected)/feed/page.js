@@ -3,6 +3,7 @@ import CreatePostBox from "@/components/feed/CreatePostBox";
 import FeedContainer from "@/components/feed/FeedContainer";
 import PostCard from "@/components/feed/PostCard";
 import StoriesSection from "@/components/feed/StoriesSection";
+import NoPostsFound from "@/components/feed/NoPostsFound";
 import LeftSidebar from "@/components/layouts/LeftSidebar";
 import MobileBottomNav from "@/components/layouts/MobileBottomNav";
 import MobileHeader from "@/components/layouts/MobileHeader";
@@ -34,9 +35,21 @@ export default function Home() {
                 <FeedContainer>
                   <StoriesSection />
                   <CreatePostBox />
-                  {data?.results?.map((post) => (
-                    <PostCard key={post.id} postData={post} />
-                  ))}
+                  {isLoading ? (
+                    <div className="_loading_posts">
+                      <p>Loading posts...</p>
+                    </div>
+                  ) : isError ? (
+                    <div className="_error_posts">
+                      <p>Error loading posts. Please try again later.</p>
+                    </div>
+                  ) : data?.results && data.results.length > 0 ? (
+                    data.results.map((post) => (
+                      <PostCard key={post.id} postData={post} />
+                    ))
+                  ) : (
+                    <NoPostsFound />
+                  )}
                 </FeedContainer>
               </div>
               {/* Right Column */}

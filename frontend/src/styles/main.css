@@ -6009,6 +6009,54 @@
     outline:none !important;
 }
 /*---- Comment Reply css end -----*/
+
+/*---- Loading & Error States ----*/
+._loading_posts {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    background: #fff;
+    border-radius: 6px;
+    margin-top: 16px;
+    font-size: 16px;
+    color: #666;
+    font-weight: 500;
+}
+
+._error_posts {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    background: #fff;
+    border-radius: 6px;
+    margin-top: 16px;
+    font-size: 16px;
+    color: #d32f2f;
+    font-weight: 500;
+    border: 1px solid #ffcdd2;
+}
+
+._error_posts p {
+    margin: 0;
+}
+
+._loading_posts p {
+    margin: 0;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+/*---- Loading & Error States End ----*/
+
 /*--- chat mobile seetings css ----*/
 ._chat_mobile_top {
     display: flex;

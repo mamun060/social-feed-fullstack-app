@@ -110,7 +110,7 @@ export const apiSlice = createApi({
 
     // users
     getUser: builder.query({
-      query: () => 'auth/me/',
+      query: () => '/auth/me/',
       providesTags: ['User'],
     }),
 
@@ -160,6 +160,11 @@ export const apiSlice = createApi({
       invalidatesTags: ['Post'],
     }),
 
+    likeList: builder.query({
+      query: (id) => `/posts/${id}/likes_list/`,
+      providesTags: ['Post'],
+    }),
+
     // post search
     searchPosts: builder.query({
       query: (searchTerm) => `/posts/?search=${searchTerm}`,
@@ -178,6 +183,7 @@ export const {
   useUpdatePostMutation,
   useDeletePostMutation,
   useLikePostMutation,
+  useLikeListQuery,
   useSearchPostsQuery,
 } = apiSlice;
 

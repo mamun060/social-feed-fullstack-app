@@ -1,14 +1,17 @@
 "use client";
-import { useUpdatePostMutation, useDeletePostMutation, useGetUserQuery, useLikePostMutation } from "@/lib/features/api/apiSlice";
+import { useEffect } from "react";
+import { useDeletePostMutation, useGetUserQuery, useLikePostMutation } from "@/lib/features/api/apiSlice";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 import EditPostModal from "./EditPostModal";
+import WhoLikedModal from "./WhoLikedModal";
 
 const PostCard = ({ postData , onPostDeleted }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [isWhoLikedModalOpen, setIsWhoLikedModalOpen] = useState(false);
   const [likePost, { isLoading: isLiking }] = useLikePostMutation();
   const [localIsLiked, setLocalIsLiked] = useState(postData?.is_liked || false);
   const [localLikesCount, setLocalLikesCount] = useState(postData?.likes_count || 0);
@@ -86,7 +89,8 @@ const PostCard = ({ postData , onPostDeleted }) => {
 
   const title = content ? content.split("\n")[0].slice(0, 120) : "";
   const [timeAgo, setTimeAgo] = React.useState("just now");
-  React.useEffect(() => {
+  
+  useEffect(() => {
     const t = formatTimeAgo(created_at);
     setTimeAgo(t);
   }, [created_at]);
@@ -312,25 +316,46 @@ const PostCard = ({ postData , onPostDeleted }) => {
 
       {/* Stats Section */}
       <div className="_feed_inner_timeline_total_reacts _padd_r24 _padd_l24 _mar_b26">
-        <div className="_feed_inner_timeline_total_reacts_image">
-          <img
-            src="/images/react_img1.png"
-            alt="Image"
-            className="_react_img1"
-          />
-          <img
-            src="/images/react_img2.png"
-            alt="Image"
-            className="_react_img"
-          />
-          <img
-            src="/images/react_img3.png"
-            alt="Image"
-            className="_react_img _rect_img_mbl_none"
-          />
-          <p className="_feed_inner_timeline_total_reacts_para">
-            {localLikesCount > 5 ? `${localLikesCount}+` : localLikesCount}
-          </p> 
+        <div onClick={() => localLikesCount > 0 && setIsWhoLikedModalOpen(true)} className="_feed_inner_timeline_total_reacts_image">
+          {/* Show reaction images based on like count */}
+          {localLikesCount >= 1 && (
+            <img
+              src="/images/react_img1.png"
+              alt="Image"
+              className="_react_img1"
+            />
+          )}
+          {localLikesCount >= 2 && (
+            <img
+              src="/images/react_img2.png"
+              alt="Image"
+              className="_react_img"
+            />
+          )}
+          {localLikesCount >= 3 && (
+            <img
+              src="/images/react_img3.png"
+              alt="Image"
+              className="_react_img _rect_img_mbl_none"
+            />
+          )}
+          
+          {/* Show like count */}
+          {localLikesCount > 0 && (
+            <button 
+              style={{
+                background: "none",
+                border: "none",
+                padding: 0,
+                cursor: "pointer",
+                marginLeft: localLikesCount >= 1 ? "8px" : "0",
+              }}
+            >
+              <p className="_feed_inner_timeline_total_reacts_para">
+                {localLikesCount > 5 ? `${localLikesCount}+` : localLikesCount}
+              </p>
+            </button>
+          )}
         </div>
         <div className="_feed_inner_timeline_total_reacts_txt">
           <p className="_feed_inner_timeline_total_reacts_para1">
@@ -697,6 +722,14 @@ const PostCard = ({ postData , onPostDeleted }) => {
       onSuccess={() => {
         // update the post list
       }}
+    />
+
+    {/* who liked modal */}
+    <WhoLikedModal
+      postId={postData?.id}
+      isOpen={isWhoLikedModalOpen}
+      onClose={() => setIsWhoLikedModalOpen(false)}
+      likeCount={localLikesCount}
     />
     </div>
   );
