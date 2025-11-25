@@ -10,29 +10,9 @@ import Navbar from "@/components/layouts/Navbar";
 import RightSidebar from "@/components/layouts/RightSidebar";
 import { useGetPostsQuery } from "@/lib/features/api/apiSlice";
 
-const dummyPosts = [
-  {
-    id: 1,
-    author: "Karim Saif",
-    timeAgo: "5 minute ago",
-    title: "-Healthy Tracking App",
-    postImage: "/images/timeline_img.png",
-    stats: { comments: 12, shares: 122, totalReactions: 198 },
-  },
-  {
-    id: 2,
-    author: "Another User",
-    timeAgo: "1 hour ago",
-    title: "My second post title",
-    postImage: "/images/timeline_img.png",
-    stats: { comments: 5, shares: 20, totalReactions: 50 },
-  },
-];
-
 export default function Home() {
   const {data, isSuccess, isLoading, isError, error} = useGetPostsQuery();
-  // console.log(data.results);
-  
+
   return (
     <div className="_layout _layout_main_wrapper">
       <div className="_main_layout">

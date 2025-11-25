@@ -93,7 +93,8 @@ const RegistrationPage = () => {
                                                 <input 
                                                     type="text" 
                                                     name="first_name"
-                                                    placeholder='First Name' 
+                                                    placeholder='First Name'
+                                                    value={formData?.first_name} 
                                                     className="form-control _social_registration_input" 
                                                     onChange={handleChange}
                                                 />
@@ -105,7 +106,8 @@ const RegistrationPage = () => {
                                                 <input 
                                                     type="text" 
                                                     name="last_name"
-                                                    placeholder='Last Name' 
+                                                    placeholder='Last Name'
+                                                    value={formData?.last_name} 
                                                     className="form-control _social_registration_input" 
                                                     onChange={handleChange}
                                                 />
@@ -119,6 +121,7 @@ const RegistrationPage = () => {
                                                     type="text" 
                                                     name="username"
                                                     placeholder='User Name' 
+                                                    value={formData?.username} 
                                                     className="form-control _social_registration_input" 
                                                     onChange={handleChange}
                                                 />
@@ -132,6 +135,7 @@ const RegistrationPage = () => {
                                                     type="email" 
                                                     name="email"
                                                     placeholder='Email'
+                                                    value={formData?.email}
                                                     className="form-control _social_registration_input" 
                                                     onChange={handleChange}
                                                     required
@@ -146,7 +150,7 @@ const RegistrationPage = () => {
                                                     name="password"
                                                     className="form-control _social_registration_input" 
                                                     onChange={handleChange}
-                                                    autoComplete="new-password"
+                                                    value={formData?.password}
                                                     required
                                                 />
                                             </div>
@@ -159,7 +163,7 @@ const RegistrationPage = () => {
                                                     name="confirm_password"
                                                     className="form-control _social_registration_input" 
                                                     onChange={handleChange}
-                                                    autoComplete="new-password"
+                                                    value={formData?.confirm_password}
                                                     required
                                                 />
                                             </div>

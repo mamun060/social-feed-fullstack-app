@@ -4,13 +4,12 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useLoginMutation } from '@/lib/features/api/apiSlice';
 
-
 const LoginPage = () => {
   const router = useRouter();
   const [login, { isLoading }] = useLoginMutation();
 
   const [formData, setFormData] = useState({
-    email: '', 
+    username: '', 
     password: ''
   });
 
@@ -22,27 +21,15 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMsg(""); // Clear previous errors
+    setErrorMsg("");
 
     try {
-      // 1. ATTEMPT LOGIN
-      // .unwrap() is CRITICAL here. It makes sure that if the API returns 400/401,
-      // it throws an error immediately and jumps to the 'catch' block.
       const res = await login(formData).unwrap();
-
-      // 2. IF SUCCESSFUL (Code reaches here only if password is correct)
-      console.log("Login Successful");
       localStorage.setItem("access_token", res.access);
       localStorage.setItem("refresh_token", res.refresh);
-
-      // 3. REDIRECT
       router.push("/feed");
-
     } catch (err) {
-      // 4. IF FAILED (Wrong password/username)
-      // The code jumps here. router.push() NEVER runs.
       console.error("Login Failed:", err);
-      
       if (err.status === 401) {
         setErrorMsg("Invalid username or password.");
       } else {
