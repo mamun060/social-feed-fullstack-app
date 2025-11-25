@@ -2,15 +2,24 @@
 from rest_framework import viewsets, permissions, status, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.exceptions import PermissionDenied
 from django.db.models import Q
 from .models import Post, Comment, PostLike, CommentLike
 from .serializers import PostSerializer, CommentSerializer, LikeUserSerializer
+
+class IsPostAuthor(permissions.BasePermission):
+    """Custom permission to check if user is the author of the post"""
+    def has_object_permission(self, request, view, obj):
+        return obj.author == request.user
 
 class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticated]
     # Scalability: Order by newest first
-    ordering = ['-created_at'] 
+    ordering = ['-created_at']
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['content', 'author__username']
+    
     def get_queryset(self):
         user = self.request.user
         # Requirement: Show Public posts OR Private posts owned by the user
@@ -20,6 +29,25 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+    
+    def perform_update(self, serializer):
+        """Only allow author to update their own post"""
+        if serializer.instance.author != self.request.user:
+            raise PermissionDenied("You can only update your own posts.")
+        serializer.save()
+    
+    def perform_destroy(self, instance):
+        """Only allow author to delete their own post"""
+        if instance.author != self.request.user:
+            raise PermissionDenied("You can only delete your own posts.")
+        instance.delete()
+    
+    @action(detail=False, methods=['get'])
+    def my_posts(self, request):
+        """Get all posts created by the current user"""
+        user_posts = Post.objects.filter(author=request.user).select_related('author').prefetch_related('likes', 'comments').order_by('-created_at')
+        serializer = self.get_serializer(user_posts, many=True)
+        return Response(serializer.data)
 
     # Endpoint to toggle like on a post
     @action(detail=True, methods=['post'])

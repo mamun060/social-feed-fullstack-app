@@ -8,10 +8,10 @@ import MobileBottomNav from "@/components/layouts/MobileBottomNav";
 import MobileHeader from "@/components/layouts/MobileHeader";
 import Navbar from "@/components/layouts/Navbar";
 import RightSidebar from "@/components/layouts/RightSidebar";
-import { useGetPostsQuery } from "@/lib/features/api/apiSlice";
+import { useGetMyPostsQuery } from "@/lib/features/api/apiSlice";
 
 export default function Home() {
-  const {data, isSuccess, isLoading, isError, error} = useGetPostsQuery();
+  const {data, isSuccess, isLoading, isError, error} = useGetMyPostsQuery();
 
   return (
     <div className="_layout _layout_main_wrapper">
@@ -29,12 +29,10 @@ export default function Home() {
                 <LeftSidebar />
               </div>
 
-              {/* Middle Column The Feed */}
               <div className="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                 <FeedContainer>
-                  <StoriesSection />
                   <CreatePostBox />
-                  {data?.results?.map((post) => (
+                  {data?.map((post) => (
                     <PostCard key={post.id} postData={post} />
                   ))}
                 </FeedContainer>

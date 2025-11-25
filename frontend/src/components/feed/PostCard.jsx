@@ -1,10 +1,18 @@
 "use client";
+import { useUpdatePostMutation, useGetUserQuery } from "@/lib/features/api/apiSlice";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
+import EditPostModal from "./EditPostModal";
 
 const PostCard = ({ postData }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [updatePost] = useUpdatePostMutation();
+  const { data: currentUser } = useGetUserQuery();
+
+  // check if current user is the post owner
+  const isPostOwner = currentUser && postData?.author?.id === currentUser.id;
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -170,60 +178,79 @@ const PostCard = ({ postData }) => {
                     </a>
                   </li>
 
-                  {/* Item 4: Edit Post */}
-                  <li className="_feed_timeline_dropdown_item">
-                    <a href="#0" className="_feed_timeline_dropdown_link">
-                      <span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="18"
-                          height="18"
-                          fill="none"
-                          viewBox="0 0 18 18"
-                        >
-                          <path
-                            stroke="#1890FF"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="1.2"
-                            d="M8.25 3H3a1.5 1.5 0 00-1.5 1.5V15A1.5 1.5 0 003 16.5h10.5A1.5 1.5 0 0015 15V9.75"
-                          ></path>
-                          <path
-                            stroke="#1890FF"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="1.2"
-                            d="M13.875 1.875a1.591 1.591 0 112.25 2.25L9 11.25 6 12l.75-3 7.125-7.125z"
-                          ></path>
-                        </svg>
-                      </span>
-                      Edit Post
-                    </a>
-                  </li>
+                  {/* Item 4: Edit Post - Only show if user owns the post */}
+                  {isPostOwner && (
+                    <li className="_feed_timeline_dropdown_item">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsEditModalOpen(true);
+                          setIsDropdownOpen(false);
+                        }}
+                        style={{
+                          background: "none",
+                          border: "none",
+                          width: "100%",
+                          textAlign: "left",
+                          cursor: "pointer",
+                          padding: 0,
+                        }}
+                        className="_feed_timeline_dropdown_link"
+                      >
+                        <span>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="18"
+                            height="18"
+                            fill="none"
+                            viewBox="0 0 18 18"
+                          >
+                            <path
+                              stroke="#1890FF"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="1.2"
+                              d="M8.25 3H3a1.5 1.5 0 00-1.5 1.5V15A1.5 1.5 0 003 16.5h10.5A1.5 1.5 0 0015 15V9.75"
+                            ></path>
+                            <path
+                              stroke="#1890FF"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="1.2"
+                              d="M13.875 1.875a1.591 1.591 0 112.25 2.25L9 11.25 6 12l.75-3 7.125-7.125z"
+                            ></path>
+                          </svg>
+                        </span>
+                        Edit Post
+                      </button>
+                    </li>
+                  )}
 
-                  {/* Item 5: Delete Post */}
-                  <li className="_feed_timeline_dropdown_item">
-                    <a href="#0" className="_feed_timeline_dropdown_link">
-                      <span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="18"
-                          height="18"
-                          fill="none"
-                          viewBox="0 0 18 18"
-                        >
-                          <path
-                            stroke="#1890FF"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="1.2"
-                            d="M2.25 4.5h13.5M6 4.5V3a1.5 1.5 0 011.5-1.5h3A1.5 1.5 0 0112 3v1.5m2.25 0V15a1.5 1.5 0 01-1.5 1.5h-7.5a1.5 1.5 0 01-1.5-1.5V4.5h10.5zM7.5 8.25v4.5M10.5 8.25v4.5"
-                          ></path>
-                        </svg>
-                      </span>
-                      Delete Post
-                    </a>
-                  </li>
+                  {/* Item 5: Delete Post - Only show if user owns the post */}
+                  {isPostOwner && (
+                    <li className="_feed_timeline_dropdown_item">
+                      <a href="#0" className="_feed_timeline_dropdown_link">
+                        <span>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="18"
+                            height="18"
+                            fill="none"
+                            viewBox="0 0 18 18"
+                          >
+                            <path
+                              stroke="#1890FF"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="1.2"
+                              d="M2.25 4.5h13.5M6 4.5V3a1.5 1.5 0 011.5-1.5h3A1.5 1.5 0 0112 3v1.5m2.25 0V15a1.5 1.5 0 01-1.5 1.5h-7.5a1.5 1.5 0 01-1.5-1.5V4.5h10.5zM7.5 8.25v4.5M10.5 8.25v4.5"
+                            ></path>
+                          </svg>
+                        </span>
+                        Delete Post
+                      </a>
+                    </li>
+                  )}
                 </ul>
               </div>
             )}
@@ -566,6 +593,16 @@ const PostCard = ({ postData }) => {
         </div>
       </div>
     </div>
+    
+    {/* Edit Post Modal */}
+    <EditPostModal
+      postData={postData}
+      isOpen={isEditModalOpen}
+      onClose={() => setIsEditModalOpen(false)}
+      onSuccess={() => {
+        // Optionally refresh or update the post list
+      }}
+    />
     </div>
   );
 };

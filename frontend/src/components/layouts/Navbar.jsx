@@ -206,7 +206,9 @@ const Navbar = () => {
                                     <img src="/images/profile.png" alt="Image" className="_nav_drop_img" />
                                 </div>
                                 <div className="_nav_profile_dropdown_info_txt">
-                                    <h4 className="_nav_dropdown_title">Dylan Field</h4>
+                                    <h4 className="_nav_dropdown_title">
+                                        {user?.first_name || "Unknown"} {user?.last_name || "User"}
+                                    </h4>
                                     <Link href="/profile" className="_nav_drop_profile">
                                         View Profile
                                     </Link>
@@ -214,6 +216,36 @@ const Navbar = () => {
                             </div>
                             <hr />
                             <ul className="_nav_dropdown_list">
+                                <li className="_nav_dropdown_list_item">
+                                    <Link href={'/my-feed'} className="_nav_dropdown_link">
+                                        <div className="_nav_drop_info">
+                                            <span>
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    width="22"
+                                                    height="22"
+                                                    viewBox="0 0 22 24"
+                                                    fill="none"
+                                                    stroke="#666"
+                                                    strokeWidth="2"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    className="feather feather-save"
+                                                    >
+                                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                                    <polyline points="7 3 7 8 15 8"></polyline>
+                                                </svg>
+                                            </span>
+                                            My Feed
+                                        </div>
+                                        <button type="submit" className="_nav_drop_btn_link">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="6" height="10" fill="none" viewBox="0 0 6 10">
+                                                <path fill="#112032" d="M5 5l.354.354L5.707 5l-.353-.354L5 5zM1.354 9.354l4-4-.708-.708-4 4 .708.708zm4-4.708l-4-4-.708.708 4 4 .708-.708z" opacity=".5" />
+                                            </svg>
+                                        </button>
+                                    </Link>
+                                </li>
                                 <li className="_nav_dropdown_list_item">
                                     <a href="#0" className="_nav_dropdown_link">
                                         <div className="_nav_drop_info">
