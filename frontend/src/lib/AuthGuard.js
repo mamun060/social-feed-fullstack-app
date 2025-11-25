@@ -1,23 +1,22 @@
-"use client"; // Must be client side to read LocalStorage
-
+"use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useGetUserQuery } from "./features/api/apiSlice";
 
 export default function AuthGuard({ children }) {
+  const { data: user, isLoading, isError } = useGetUserQuery();
   const router = useRouter();
-  const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    if (!token) {
+    if (!isLoading && isError) {
       router.push("/");
-    } else {
-      setIsAuthorized(true);
     }
-  }, [router]);
+  }, [isLoading, isError, router]);
 
-  if (!isAuthorized) {
+  if (isLoading) {
     return <div className="flex h-screen items-center justify-center">Loading...</div>;
   }
   return <>{children}</>;
+
+  return null;
 }

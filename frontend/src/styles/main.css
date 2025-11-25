@@ -5503,6 +5503,157 @@
 ._mobile_navigation_bottom_link:hover svg ._mobile_svg1{
     stroke:var(--color5);
 }
+
+/* Mobile User Name */
+._header_mobile_toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+._mobile_user_name_btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+._mobile_user_name_btn:hover {
+    background-color: rgba(24, 144, 255, 0.1);
+}
+
+._mobile_user_name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color6);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 80px;
+    text-align: center;
+}
+
+/* Mobile Logout Modal */
+._mobile_logout_modal_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    backdrop-filter: blur(4px);
+}
+
+._mobile_logout_modal {
+    background-color: var(--bg2);
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 320px;
+    width: 90%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: slideUp 0.3s ease;
+}
+
+._mobile_logout_modal_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--bg3);
+    padding-bottom: 12px;
+}
+
+._mobile_logout_modal_title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color6);
+    margin: 0;
+}
+
+._mobile_logout_modal_close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: var(--color5);
+    cursor: pointer;
+    padding: 0;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+._mobile_logout_modal_close:hover {
+    color: var(--color6);
+}
+
+._mobile_logout_modal_content {
+    margin-bottom: 20px;
+}
+
+._mobile_logout_modal_content p {
+    font-size: 14px;
+    color: var(--color5);
+    margin: 0;
+    line-height: 1.5;
+}
+
+._mobile_logout_modal_actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+._mobile_logout_btn_cancel,
+._mobile_logout_btn_confirm {
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+._mobile_logout_btn_cancel {
+    background-color: var(--bg2);
+    color: var(--color6);
+}
+
+._mobile_logout_btn_cancel:hover {
+    background-color: var(--bg3);
+}
+
+._mobile_logout_btn_confirm {
+    background-color: #ff4d4f;
+    color: white;
+    border-color: #ff4d4f;
+}
+
+._mobile_logout_btn_confirm:hover {
+    background-color: #cf1322;
+    border-color: #cf1322;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
 /*---- Mobile Bottom nav Css End ----*/
 
 /*---- Dropdown Css ----*/

@@ -1,12 +1,21 @@
-import React from 'react';
+"use client";
+import React, { useState } from 'react';
 import Link from 'next/link';
-// import { useRouter } from 'next/router'; // Uncomment to use router for active link styling
+import { useRouter } from 'next/navigation';
 
 const MobileBottomNav = () => {
-    // const router = useRouter(); // Uncomment to get current route
+    const router = useRouter();
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-    // Helper function to check if a link is active (example implementation)
-    // const isActive = (path) => router.pathname === path ? '_mobile_navigation_bottom_link_active' : '';
+    const handleLogout = () => {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        router.push('/');
+    };
+
+    const handleUserNameClick = () => {
+        setShowLogoutModal(true);
+    };
 
     return (
         <div className="_mobile_navigation_bottom_wrapper">
@@ -27,7 +36,7 @@ const MobileBottomNav = () => {
                                 </li>
                                 {/* Item 2: Friend Requests */}
                                 <li className="_mobile_navigation_bottom_item">
-                                    <Link href="/friend-request" className="_mobile_navigation_bottom_link">
+                                    <Link href="/#" className="_mobile_navigation_bottom_link">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="27" height="20" fill="none" viewBox="0 0 27 20">
                                             <path className="_dark_svg" fill="#000" fillOpacity=".6" fillRule="evenodd" d="M13.334 12.405h.138l.31.001c2.364.015 7.768.247 7.768 3.81 0 3.538-5.215 3.769-7.732 3.784h-.932c-2.364-.015-7.77-.247-7.77-3.805 0-3.543 5.405-3.774 7.77-3.789l.31-.001h.138zm0 1.787c-2.91 0-6.38.348-6.38 2.003 0 1.619 3.263 1.997 6.114 2.018l.266.001c2.91 0 6.379-.346 6.379-1.998 0-1.673-3.469-2.024-6.38-2.024zm9.742-2.27c2.967.432 3.59 1.787 3.59 2.849 0 .648-.261 1.83-2.013 2.48a.953.953 0 01-.327.058.919.919 0 01-.858-.575.886.886 0 01.531-1.153c.83-.307.83-.647.83-.81 0-.522-.682-.886-2.027-1.082a.9.9 0 01-.772-1.017c.074-.488.54-.814 1.046-.75zm-18.439.75a.9.9 0 01-.773 1.017c-1.345.196-2.027.56-2.027 1.082 0 .163 0 .501.832.81a.886.886 0 01.531 1.153.92.92 0 01-.858.575.953.953 0 01-.327-.058C.262 16.6 0 15.418 0 14.77c0-1.06.623-2.417 3.592-2.85.506-.061.97.263 1.045.751zM13.334 0c3.086 0 5.596 2.442 5.596 5.442 0 3.001-2.51 5.443-5.596 5.443H13.3a5.616 5.616 0 01-3.943-1.603A5.308 5.308 0 017.74 5.439C7.739 2.442 10.249 0 13.334 0zm0 1.787c-2.072 0-3.758 1.64-3.758 3.655-.003.977.381 1.89 1.085 2.58a3.772 3.772 0 002.642 1.076l.03.894v-.894c2.073 0 3.76-1.639 3.76-3.656 0-2.015-1.687-3.655-3.76-3.655zm7.58-.62c2.153.344 3.717 2.136 3.717 4.26-.004 2.138-1.647 3.972-3.82 4.269a.911.911 0 01-1.036-.761.897.897 0 01.782-1.01c1.273-.173 2.235-1.248 2.237-2.501 0-1.242-.916-2.293-2.179-2.494a.897.897 0 01-.756-1.027.917.917 0 011.055-.736zM6.81 1.903a.897.897 0 01-.757 1.027C4.79 3.13 3.874 4.182 3.874 5.426c.002 1.251.963 2.327 2.236 2.5.503.067.853.519.783 1.008a.912.912 0 01-1.036.762c-2.175-.297-3.816-2.131-3.82-4.267 0-2.126 1.5-3.918 3.717-4.262.515-.079.972.251 1.055.736z" clipRule="evenodd" />
                                         </svg>
@@ -42,40 +51,58 @@ const MobileBottomNav = () => {
                                         <span className="_counting">6</span>
                                     </a>
                                 </li>
-                                {/* Item 4: Chat */}
-                                <li className="_mobile_navigation_bottom_item">
-                                    <Link href="/chat" className="_mobile_navigation_bottom_link">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                            <path className="_dark_svg" fill="#000" fillOpacity=".6" fillRule="evenodd" d="M12.002 0c3.208 0 6.223 1.239 8.487 3.489 4.681 4.648 4.681 12.211 0 16.86-2.294 2.28-5.384 3.486-8.514 3.486-1.706 0-3.423-.358-5.03-1.097-.474-.188-.917-.366-1.235-.366-.366.003-.859.171-1.335.334-.976.333-2.19.748-3.09-.142-.895-.89-.482-2.093-.149-3.061.164-.477.333-.97.333-1.342 0-.306-.149-.697-.376-1.259C-1 12.417-.032 7.011 3.516 3.49A11.96 11.96 0 0112.002 0zm.001 1.663a10.293 10.293 0 00-7.304 3.003A10.253 10.253 0 002.63 16.244c.261.642.514 1.267.514 1.917 0 .649-.225 1.302-.422 1.878-.163.475-.41 1.191-.252 1.349.156.16.881-.092 1.36-.255.576-.195 1.228-.42 1.874-.424.648 0 1.259.244 1.905.503 3.96 1.818 8.645.99 11.697-2.039 4.026-4 4.026-10.509 0-14.508a10.294 10.294 0 00-7.303-3.002zm4.407 9.607c.617 0 1.117.495 1.117 1.109 0 .613-.5 1.109-1.117 1.109a1.116 1.116 0 01-1.12-1.11c0-.613.494-1.108 1.11-1.108h.01zm-4.476 0c.616 0 1.117.495 1.117 1.109 0 .613-.5 1.109-1.117 1.109a1.116 1.116 0 01-1.121-1.11c0-.613.493-1.108 1.11-1.108h.01zm-4.477 0c.617 0 1.117.495 1.117 1.109 0 .613-.5 1.109-1.117 1.109a1.116 1.116 0 01-1.12-1.11c0-.613.494-1.108 1.11-1.108h.01z" clipRule="evenodd" />
-                                        </svg>
-                                        <span className="_counting">2</span>
-                                    </Link>
-                                </li>
-                                {/* Item 5: Mobile Menu Toggle */}
-                                {/* NOTE: This is a form submission in the original HTML. 
-                                  In a Next.js app, this should likely be a button that toggles a state 
-                                  to show/hide a mobile drawer menu, rather than navigating to a new page.
-                                */}
+                               
+                                {/* logout button */}
                                 <div className="_header_mobile_toggle">
-                                    <form action="/mobileMenu">
-                                        <button type="submit" className="_header_mobile_btn_link" value="go to mobile menu">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="14" fill="none" viewBox="0 0 18 14">
-                                                <path stroke="#666" strokeLinecap="round" strokeWidth="1.5" d="M1 1h16M1 7h16M1 13h16" />
-                                            </svg>
-                                        </button>
-                                    </form>
+                                    <button 
+                                        className="_mobile_user_name_btn"
+                                        onClick={handleUserNameClick}
+                                        title="Click to logout"
+                                    >
+                                        <div className="_nav_drop_info">
+                                            <span>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="none" viewBox="0 0 19 19">
+                                                    <path stroke="#377DFF" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M6.667 18H2.889A1.889 1.889 0 011 16.111V2.89A1.889 1.889 0 012.889 1h3.778M13.277 14.222L18 9.5l-4.723-4.722M18 9.5H6.667" />
+                                                </svg>
+                                            </span>
+                                            Log Out
+                                        </div>
+                                    </button>
                                 </div>
-                                {/* Commented out Profile link from source HTML kept here for reference */}
-                                {/* <li className="_mobile_navigation_bottom_item">
-                                    <Link href="/profile" className="_mobile_navigation_bottom_link">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="29" height="28" fill="none" viewBox="0 0 29 28">
-                                            <g opacity=".6">
-                                                <path className="_mobile_svg1 _dark_svg" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M23.999 24.5v-2.333a4.667 4.667 0 00-4.667-4.667H9.999a4.667 4.667 0 00-4.667 4.667V24.5M14.667 12.833a4.667 4.667 0 100-9.333 4.667 4.667 0 000 9.333z" />
-                                            </g>
-                                        </svg>
-                                    </Link>
-                                </li> 
-                                */}
+
+                                {/* Logout Modal */}
+                                {showLogoutModal && (
+                                    <div className="_mobile_logout_modal_overlay" onClick={() => setShowLogoutModal(false)}>
+                                        <div className="_mobile_logout_modal" onClick={(e) => e.stopPropagation()}>
+                                            <div className="_mobile_logout_modal_header">
+                                                <h3 className="_mobile_logout_modal_title">Logout</h3>
+                                                <button 
+                                                    className="_mobile_logout_modal_close"
+                                                    onClick={() => setShowLogoutModal(false)}
+                                                >
+                                                    ✕
+                                                </button>
+                                            </div>
+                                            <div className="_mobile_logout_modal_content">
+                                                <p>Are you sure you want to logout?</p>
+                                            </div>
+                                            <div className="_mobile_logout_modal_actions">
+                                                <button 
+                                                    className="_mobile_logout_btn_cancel"
+                                                    onClick={() => setShowLogoutModal(false)}
+                                                >
+                                                    Cancel
+                                                </button>
+                                                <button 
+                                                    className="_mobile_logout_btn_confirm"
+                                                    onClick={handleLogout}
+                                                >
+                                                    Logout
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </ul>
                         </div>
                     </div>
