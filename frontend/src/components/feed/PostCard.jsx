@@ -1,22 +1,16 @@
 "use client";
-import { useUpdatePostMutation, useGetUserQuery } from "@/lib/features/api/apiSlice";
+import { useUpdatePostMutation, useDeletePostMutation, useGetUserQuery } from "@/lib/features/api/apiSlice";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 import EditPostModal from "./EditPostModal";
 
-const PostCard = ({ postData }) => {
+const PostCard = ({ postData , onPostDeleted }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [updatePost] = useUpdatePostMutation();
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [deletePost, { isLoading: isDeleting }] = useDeletePostMutation();
   const { data: currentUser } = useGetUserQuery();
-
-  // check if current user is the post owner
-  const isPostOwner = currentUser && postData?.author?.id === currentUser.id;
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
 
   const {
     id,
@@ -29,6 +23,30 @@ const PostCard = ({ postData }) => {
     is_liked = false,
     comments_count = 0,
   } = postData || {};
+
+  // Check if current user is the post owner
+  const isPostOwner = currentUser && postData?.author?.id === currentUser.id;
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleDeleteClick = () => {
+    setDeleteConfirmOpen(true);
+    setIsDropdownOpen(false);
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      await deletePost(postData.id).unwrap();
+      setDeleteConfirmOpen(false);
+      onPostDeleted?.(postData.id);
+    } catch (err) {
+      console.error("Failed to delete post:", err);
+      alert("Failed to delete post. Please try again.");
+      setDeleteConfirmOpen(false);
+    }
+  };
 
   const author = authorObj
     ? `${authorObj.first_name || ""} ${authorObj.last_name || ""}`.trim() || authorObj.username
@@ -100,7 +118,7 @@ const PostCard = ({ postData }) => {
                 </svg>
               </button>
             </div>
-            {/*Dropdown Menu - Conditional Rendering based on state */}
+            {/* dropdown Menu - Conditional Rendering based on state */}
             {isDropdownOpen && (
               <div
                 id="_timeline_drop"
@@ -229,7 +247,19 @@ const PostCard = ({ postData }) => {
                   {/* Item 5: Delete Post - Only show if user owns the post */}
                   {isPostOwner && (
                     <li className="_feed_timeline_dropdown_item">
-                      <a href="#0" className="_feed_timeline_dropdown_link">
+                      <button
+                        type="button"
+                        onClick={handleDeleteClick}
+                        style={{
+                          background: "none",
+                          border: "none",
+                          width: "100%",
+                          textAlign: "left",
+                          cursor: "pointer",
+                          padding: 0,
+                        }}
+                        className="_feed_timeline_dropdown_link"
+                      >
                         <span>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -248,7 +278,7 @@ const PostCard = ({ postData }) => {
                           </svg>
                         </span>
                         Delete Post
-                      </a>
+                      </button>
                     </li>
                   )}
                 </ul>
@@ -594,13 +624,51 @@ const PostCard = ({ postData }) => {
       </div>
     </div>
     
-    {/* Edit Post Modal */}
+    {/* delete confirmation modal */}
+    {deleteConfirmOpen && (
+      <div
+        className="modal_overlay"
+        onClick={() => setDeleteConfirmOpen(false)}
+      >
+        <div
+          className="modal_box" 
+          onClick={(e) => e.stopPropagation()}
+        >
+          <h3 className="modal_title">
+            Delete Post?
+          </h3>
+          <p className="modal_text">
+            Are you sure you want to delete this post? This action cannot be undone.
+          </p>
+          <div className="modal_actions">
+            <button
+              type="button"
+              onClick={() => setDeleteConfirmOpen(false)}
+              disabled={isDeleting}
+              className="modal_btn_cancel"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleConfirmDelete}
+              disabled={isDeleting}
+              className="modal_btn_delete"
+            >
+              {isDeleting ? "Deleting..." : "Delete"}
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+    
+    {/* edit post modal */}
     <EditPostModal
       postData={postData}
       isOpen={isEditModalOpen}
       onClose={() => setIsEditModalOpen(false)}
       onSuccess={() => {
-        // Optionally refresh or update the post list
+        // update the post list
       }}
     />
     </div>

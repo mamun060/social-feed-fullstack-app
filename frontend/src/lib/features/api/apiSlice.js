@@ -143,6 +143,14 @@ export const apiSlice = createApi({
       invalidatesTags: ['Post'],
     }),
 
+    deletePost: builder.mutation({
+      query: (id) => ({
+        url: `/posts/${id}/`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Post'],
+    }),
+
     // Like
     likePost: builder.mutation({
       query: (id) => ({
@@ -168,8 +176,8 @@ export const {
   useGetMyPostsQuery,
   useCreatePostMutation,
   useUpdatePostMutation,
+  useDeletePostMutation,
   useLikePostMutation,
   useSearchPostsQuery,
-  
 } = apiSlice;
 
