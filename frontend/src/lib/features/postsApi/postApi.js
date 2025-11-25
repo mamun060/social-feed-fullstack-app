@@ -23,10 +23,10 @@ const postApi = apiSlice.injectEndpoints({
     }),
 
     updatePost: builder.mutation({
-      query: ({ id, ...patch }) => ({
+      query: ({ id, formData }) => ({
         url: `/posts/${id}/`,
         method: 'PUT',
-        body: patch,
+        body: formData,
       }),
       invalidatesTags: ['Post'],
     }),

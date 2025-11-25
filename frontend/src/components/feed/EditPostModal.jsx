@@ -11,6 +11,8 @@ const EditPostModal = ({ postData, isOpen, onClose, onSuccess }) => {
   const fileInputRef = React.useRef(null);
   const [successMessage, setSuccessMessage] = useState("");
 
+  console.log(selectedFile)
+
   useEffect(() => {
     if (postData && isOpen) {
       setContent(postData.content || "");
@@ -60,7 +62,10 @@ const EditPostModal = ({ postData, isOpen, onClose, onSuccess }) => {
         updateData.append("image", selectedFile);
       }
 
-      await updatePost({ id: postData.id, ...Object.fromEntries(updateData) }).unwrap();
+      console.log(updateData)
+
+      await updatePost({ id: postData.id, formData: updateData }).unwrap();
+      // await updatePost({ id: postData.id, ...Object.fromEntries(updateData) }).unwrap();
 
       setSuccessMessage("Post updated successfully!");
       setTimeout(() => {
