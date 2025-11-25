@@ -19,13 +19,14 @@ urlpatterns = [
     path('api/v1/auth/login/', CustomTokenObtainPairView.as_view(), name='login'),
     path('api/v1/auth/refresh/', CustomTokenRefreshView.as_view(), name='refresh'),
     path('api/v1/auth/logout/', LogoutView.as_view(), name='logout'),
-    # path('api/v1/auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    # path('api/v1/auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/v1/auth/me/', ManageUserView.as_view(), name='me'),
     # App Routes
     path('api/v1/', include(router.urls)),
 ]
 
-# Serve media files in development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+admin.site.site_header = "Buddy Scripts Feed"
+admin.site.site_title = "Buddy Scripts Feed Admin Portal"
+admin.site.index_title = "Welcome to Buddy Scripts Feed Dashboard"

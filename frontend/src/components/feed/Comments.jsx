@@ -29,6 +29,7 @@ const Comments = ({ postId, postAuthorId }) => {
       skip: !whoLikedCommentId,
     }
   );
+  console.log(commentLikesList)
   const { data: currentUser } = useGetUserQuery();
 
   // reply hooks
@@ -609,26 +610,26 @@ const Comments = ({ postId, postAuthorId }) => {
                 </div>
               ) : (
                 <div className="_who_liked_comment_list">
-                  {commentLikesList.map((liker) => (
-                    <div key={liker.id} className="_who_liked_comment_item">
+                  {commentLikesList?.map((liker) => (
+                    <div key={liker?.user?.id} className="_who_liked_comment_item">
                       <div className="_who_liked_comment_avatar">
                         <Image
                           src="/images/comment_img.png"
-                          alt={liker.username}
+                          alt={liker?.user?.username}
                           width={40}
                           height={40}
                         />
                       </div>
                       <div className="_who_liked_comment_user_info">
                         <h5 className="_who_liked_comment_name">
-                          {liker.first_name || liker.last_name
-                            ? `${liker.first_name || ""} ${
-                                liker.last_name || ""
+                          {liker?.user?.first_name || liker?.user?.last_name
+                            ? `${liker?.user?.first_name || ""} ${
+                                liker?.user?.last_name || ""
                               }`.trim()
                             : liker.username}
                         </h5>
                         <p className="_who_liked_comment_username">
-                          @{liker.username}
+                          @{liker?.user?.username}
                         </p>
                       </div>
                     </div>
