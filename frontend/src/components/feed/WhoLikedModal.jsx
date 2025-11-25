@@ -1,6 +1,6 @@
 "use client";
+import { useLikeListQuery } from "@/lib/features/postsApi/postApi";
 import React from "react";
-import { useLikeListQuery } from "@/lib/features/api/apiSlice";
 
 const WhoLikedModal = ({ postId, isOpen, onClose, likeCount }) => {
   const { data, isLoading, isError } = useLikeListQuery(postId, {

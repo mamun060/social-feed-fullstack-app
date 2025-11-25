@@ -9,7 +9,7 @@ import MobileBottomNav from "@/components/layouts/MobileBottomNav";
 import MobileHeader from "@/components/layouts/MobileHeader";
 import Navbar from "@/components/layouts/Navbar";
 import RightSidebar from "@/components/layouts/RightSidebar";
-import { useGetPostsQuery } from "@/lib/features/api/apiSlice";
+import { useGetPostsQuery } from "@/lib/features/postsApi/postApi";
 
 export default function Home() {
   const {data, isSuccess, isLoading, isError, error} = useGetPostsQuery();

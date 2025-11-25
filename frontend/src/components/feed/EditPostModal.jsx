@@ -1,5 +1,5 @@
 "use client";
-import { useUpdatePostMutation } from "@/lib/features/api/apiSlice";
+import { useUpdatePostMutation } from "@/lib/features/postsApi/postApi";
 import React, { useState, useEffect } from "react";
 
 const EditPostModal = ({ postData, isOpen, onClose, onSuccess }) => {

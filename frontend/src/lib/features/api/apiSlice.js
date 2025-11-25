@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { updateTag } from 'next/cache';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_APP_API_URL,
@@ -89,7 +90,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['User', 'Post'],
+  tagTypes: ['User', 'Post' , 'Comment'],
   endpoints: (builder) => ({
     
     // Auth
@@ -113,63 +114,7 @@ export const apiSlice = createApi({
       query: () => '/auth/me/',
       providesTags: ['User'],
     }),
-
-    // Feed
-    getPosts: builder.query({
-      query: () => '/posts/',
-      providesTags: ['Post'],
-    }),
-
-    getMyPosts: builder.query({
-      query: () => '/posts/my_posts/',
-      providesTags: ['Post'],
-    }),
-
-    createPost: builder.mutation({
-      query: (formData) => ({
-        url: '/posts/',
-        method: 'POST',
-        body: formData,
-      }),
-      invalidatesTags: ['Post'],
-    }),
-
-    updatePost: builder.mutation({
-      query: ({ id, ...patch }) => ({
-        url: `/posts/${id}/`,
-        method: 'PUT',
-        body: patch,
-      }),
-      invalidatesTags: ['Post'],
-    }),
-
-    deletePost: builder.mutation({
-      query: (id) => ({
-        url: `/posts/${id}/`,
-        method: 'DELETE',
-      }),
-      invalidatesTags: ['Post'],
-    }),
-
-    // Like
-    likePost: builder.mutation({
-      query: (id) => ({
-        url: `/posts/${id}/like/`,
-        method: 'POST',
-      }),
-      invalidatesTags: ['Post'],
-    }),
-
-    likeList: builder.query({
-      query: (id) => `/posts/${id}/likes_list/`,
-      providesTags: ['Post'],
-    }),
-
-    // post search
-    searchPosts: builder.query({
-      query: (searchTerm) => `/posts/?search=${searchTerm}`,
-      providesTags: ['Post'],
-    }),
+   
   }),
 });
 
@@ -177,13 +122,5 @@ export const {
   useLoginMutation, 
   useRegisterMutation, 
   useGetUserQuery,
-  useGetPostsQuery, 
-  useGetMyPostsQuery,
-  useCreatePostMutation,
-  useUpdatePostMutation,
-  useDeletePostMutation,
-  useLikePostMutation,
-  useLikeListQuery,
-  useSearchPostsQuery,
 } = apiSlice;
 

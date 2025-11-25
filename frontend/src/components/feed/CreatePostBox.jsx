@@ -1,5 +1,5 @@
 "use client";
-import { useCreatePostMutation } from '@/lib/features/api/apiSlice';
+import { useCreatePostMutation } from '@/lib/features/postsApi/postApi';
 import React from 'react';
 
 const CreatePostBox = () => {

@@ -72,13 +72,20 @@ class PostViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['text', 'author__username']
 
     def get_queryset(self):
-        # Filter comments by post_id if provided in URL params
-        queryset = Comment.objects.filter(parent__isnull=True).select_related('author').prefetch_related('likes', 'replies')
+        # For list view, require post_id. For detail/update/delete, allow direct access
         post_id = self.request.query_params.get('post_id')
+        
+        # If post_id is provided, filter by it (for list view)
         if post_id:
-            queryset = queryset.filter(post_id=post_id)
+            queryset = Comment.objects.filter(parent__isnull=True, post_id=post_id).select_related('author').prefetch_related('likes', 'replies')
+        else:
+            # For detail view (retrieve, update, delete), allow all comments
+            queryset = Comment.objects.filter(parent__isnull=True).select_related('author').prefetch_related('likes', 'replies')
+        
         return queryset.order_by('-created_at')
 
     def perform_create(self, serializer):
@@ -86,8 +93,21 @@ class CommentViewSet(viewsets.ModelViewSet):
         post_id = self.request.data.get('post')
         serializer.save(author=self.request.user, post_id=post_id)
 
+    def perform_update(self, serializer):
+        """Only allow author to update their own comment"""
+        if serializer.instance.author != self.request.user:
+            raise PermissionDenied("You can only update your own comments.")
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        """Only allow author to delete their own comment"""
+        if instance.author != self.request.user:
+            raise PermissionDenied("You can only delete your own comments.")
+        instance.delete()
+
     @action(detail=True, methods=['post'])
     def like(self, request, pk=None):
+        """Toggle like on a comment"""
         comment = self.get_object()
         like_obj, created = CommentLike.objects.get_or_create(comment=comment, user=request.user)
         
@@ -95,3 +115,28 @@ class CommentViewSet(viewsets.ModelViewSet):
             like_obj.delete()
             return Response({'status': 'unliked'}, status=status.HTTP_200_OK)
         return Response({'status': 'liked'}, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['get'])
+    def likes_list(self, request, pk=None):
+        """Get all users who liked this comment"""
+        comment = self.get_object()
+        likes = CommentLike.objects.filter(comment=comment).select_related('user')
+        serializer = LikeUserSerializer(likes, many=True)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['post'])
+    def reply(self, request, pk=None):
+        """Create a reply to this comment"""
+        parent_comment = self.get_object()
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(author=request.user, parent=parent_comment, post=parent_comment.post)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['get'])
+    def replies(self, request, pk=None):
+        """Get all replies to this comment"""
+        comment = self.get_object()
+        replies = comment.replies.all().select_related('author').prefetch_related('likes', 'replies')
+        serializer = self.get_serializer(replies, many=True)
+        return Response(serializer.data)

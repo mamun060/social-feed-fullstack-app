@@ -9,7 +9,8 @@ import MobileBottomNav from "@/components/layouts/MobileBottomNav";
 import MobileHeader from "@/components/layouts/MobileHeader";
 import Navbar from "@/components/layouts/Navbar";
 import RightSidebar from "@/components/layouts/RightSidebar";
-import { useGetMyPostsQuery } from "@/lib/features/api/apiSlice";
+import { useGetMyPostsQuery } from "@/lib/features/postsApi/postApi";
+
 
 export default function Home() {
   const {data, isSuccess, isLoading, isError, error} = useGetMyPostsQuery();
@@ -41,8 +42,8 @@ export default function Home() {
                     <div className="_error_posts">
                       <p>Error loading posts. Please try again later.</p>
                     </div>
-                  ) : data?.results && data.results.length > 0 ? (
-                    data.results.map((post) => (
+                  ) : data && data?.length > 0 ? (
+                    data?.map((post) => (
                       <PostCard key={post.id} postData={post} />
                     ))
                   ) : (
