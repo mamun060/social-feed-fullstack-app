@@ -1,5 +1,5 @@
 "use client";
-import { useUpdatePostMutation, useDeletePostMutation, useGetUserQuery } from "@/lib/features/api/apiSlice";
+import { useUpdatePostMutation, useDeletePostMutation, useGetUserQuery, useLikePostMutation } from "@/lib/features/api/apiSlice";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -9,6 +9,9 @@ const PostCard = ({ postData , onPostDeleted }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [likePost, { isLoading: isLiking }] = useLikePostMutation();
+  const [localIsLiked, setLocalIsLiked] = useState(postData?.is_liked || false);
+  const [localLikesCount, setLocalLikesCount] = useState(postData?.likes_count || 0);
   const [deletePost, { isLoading: isDeleting }] = useDeletePostMutation();
   const { data: currentUser } = useGetUserQuery();
 
@@ -45,6 +48,21 @@ const PostCard = ({ postData , onPostDeleted }) => {
       console.error("Failed to delete post:", err);
       alert("Failed to delete post. Please try again.");
       setDeleteConfirmOpen(false);
+    }
+  };
+
+  const handleLike = async () => {
+    try {
+      setLocalIsLiked(!localIsLiked);
+      setLocalLikesCount(localIsLiked ? localLikesCount - 1 : localLikesCount + 1);
+      
+      await likePost(postData.id).unwrap();
+    } catch (err) {
+      console.error("Failed to like/unlike post:", err);
+      // Revert on error
+      setLocalIsLiked(localIsLiked);
+      setLocalLikesCount(localLikesCount);
+      alert("Failed to like/unlike post. Please try again.");
     }
   };
 
@@ -311,7 +329,7 @@ const PostCard = ({ postData , onPostDeleted }) => {
             className="_react_img _rect_img_mbl_none"
           />
           <p className="_feed_inner_timeline_total_reacts_para">
-            {totalReactions > 5 ? "9+" : totalReactions}
+            {localLikesCount > 5 ? `${localLikesCount}+` : localLikesCount}
           </p> 
         </div>
         <div className="_feed_inner_timeline_total_reacts_txt">
@@ -328,7 +346,16 @@ const PostCard = ({ postData , onPostDeleted }) => {
 
       {/* Action Buttons (Like, Comment, Share) */}
       <div className="_feed_inner_timeline_reaction">
-        <button className="_feed_inner_timeline_reaction_emoji _feed_reaction _feed_reaction_active">
+        <button 
+          className={`_feed_inner_timeline_reaction_emoji _feed_reaction ${localIsLiked ? '_feed_reaction_active' : ''}`}
+          onClick={handleLike}
+          disabled={isLiking}
+          style={{
+            opacity: isLiking ? 0.6 : 1,
+            cursor: isLiking ? 'not-allowed' : 'pointer',
+            transition: 'all 0.3s ease'
+          }}
+        >
           <span className="_feed_inner_timeline_reaction_link">
             <span>
               <svg
@@ -339,7 +366,7 @@ const PostCard = ({ postData , onPostDeleted }) => {
                 viewBox="0 0 19 19"
               >
                 <path
-                  fill="#FFCC4D"
+                  fill={localIsLiked ? "#FFCC4D" : "#999"}
                   d="M9.5 19a9.5 9.5 0 100-19 9.5 9.5 0 000 19z"
                 />
                 <path
@@ -355,7 +382,7 @@ const PostCard = ({ postData , onPostDeleted }) => {
                   d="M6.333 8.972c.729 0 1.32-.827 1.32-1.847s-.591-1.847-1.32-1.847c-.729 0-1.32.827-1.32 1.847s.591 1.847 1.32 1.847zM12.667 8.972c.729 0 1.32-.827 1.32-1.847s-.591-1.847-1.32-1.847c-.729 0-1.32.827-1.32 1.847s.591 1.847 1.32 1.847z"
                 />
               </svg>
-              Haha
+              {localIsLiked ? 'Unlike' : 'Like'}
             </span>
           </span>
         </button>
