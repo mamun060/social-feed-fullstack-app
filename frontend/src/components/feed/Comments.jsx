@@ -29,7 +29,6 @@ const Comments = ({ postId, postAuthorId }) => {
       skip: !whoLikedCommentId,
     }
   );
-  console.log(commentLikesList)
   const { data: currentUser } = useGetUserQuery();
 
   // reply hooks
