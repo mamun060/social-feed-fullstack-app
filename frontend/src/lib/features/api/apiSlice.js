@@ -2,91 +2,34 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { updateTag } from 'next/cache';
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: process.env.NEXT_PUBLIC_APP_API_URL,
+  baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api/v1',
+  credentials: 'include',
   prepareHeaders: (headers) => {
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('access_token');
-      if (token) {
-        headers.set('authorization', `Bearer ${token}`);
-      }
-    }
     return headers;
   },
 });
 
-// Handles Automatic Refresh Logic
-// const baseQueryWithReauth = async (args, api, extraOptions) => {
-//   let result = await baseQuery(args, api, extraOptions);
-
-//   if (result.error && result.error.status === 401) {
-//     const refreshToken = typeof window !== 'undefined' ? localStorage.getItem('refresh_token') : null;
-
-//     if (refreshToken) {
-//       const refreshResult = await baseQuery(
-//         {
-//           url: 'auth/refresh/',
-//           method: 'POST',
-//           body: { refresh: refreshToken },
-//         },
-//         api,
-//         extraOptions
-//       );
-
-//       if (refreshResult.data) {
-//         localStorage.setItem('access_token', refreshResult.data.access);        
-//         result = await baseQuery(args, api, extraOptions);
-//       } else {
-//         localStorage.removeItem('access_token');
-//         localStorage.removeItem('refresh_token');
-//         window.location.href = '/';
-//       }
-//     } else {
-//       localStorage.removeItem('access_token');
-//       window.location.href = '/';
-//     }
-//   }
-//   return result;
-// };
-
 const baseQueryWithReauth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
   const requestUrl = typeof args === 'string' ? args : args.url;
-  
-  if (requestUrl.includes('auth/login/')) {
-    return result; 
+  if (requestUrl.includes('auth/login')) {
+    return result;
   }
 
   if (result.error && result.error.status === 401) {
-    const refreshToken = typeof window !== 'undefined' ? localStorage.getItem('refresh_token') : null;
+    const refreshResult = await baseQuery(
+      { url: 'auth/refresh/', method: 'POST' },
+      api,
+      extraOptions
+    );
 
-    if (refreshToken) {
-      const refreshResult = await baseQuery(
-        {
-          url: 'auth/refresh/',
-          method: 'POST',
-          body: { refresh: refreshToken },
-        },
-        api,
-        extraOptions
-      );
-
-      if (refreshResult.data) {
-        localStorage.setItem('access_token', refreshResult.data.access);        
-        result = await baseQuery(args, api, extraOptions);
-      } else {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        window.location.href = '/';
-      }
-    } else {
-      localStorage.removeItem('access_token');
-      window.location.href = '/';
-    }
+    if (refreshResult.data) {
+      result = await baseQuery(args, api, extraOptions);
+    } 
   }
   return result;
 };
 
-// Define Endpoints
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWithReauth,
@@ -114,6 +57,21 @@ export const apiSlice = createApi({
       query: () => '/auth/me/',
       providesTags: ['User'],
     }),
+
+    logout: builder.mutation({
+      query: () => ({
+        url: 'auth/logout/',
+        method: 'POST',
+      }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          dispatch(apiSlice.util.resetApiState());
+        } catch (err) {
+          console.error("Logout failed", err);
+        }
+      },
+    }),
    
   }),
 });
@@ -122,5 +80,6 @@ export const {
   useLoginMutation, 
   useRegisterMutation, 
   useGetUserQuery,
+  useLogoutMutation, 
 } = apiSlice;
 

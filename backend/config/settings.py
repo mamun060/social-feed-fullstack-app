@@ -80,7 +80,8 @@ AUTH_USER_MODEL = 'users.CustomUser'
 # Rest Framework Config
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'users.authentication.JWTCookieAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -135,25 +136,17 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS Config 
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_ALL_ORIGINS = True # localstorage based 
 
-# CORS_ALLOW_ALL_ORIGINS = False # Disable this!
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000", # Your Next.js Frontend
-# ]
-# CORS_ALLOW_CREDENTIALS = True # IMPORTANT: Allows cookies to be sent
+# CORS CONFIGURATION
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:3000",
+    "http://localhost:3000",
+]
+CORS_ALLOW_CREDENTIALS = True
 
-# # 2. Simple JWT Config (We will store the Refresh token in a cookie)
-# from datetime import timedelta
-# SIMPLE_JWT = {
-#     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
-#     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-#     'ROTATE_REFRESH_TOKENS': True,
-#     'BLACKLIST_AFTER_ROTATION': True,
-#     # We will handle cookie setting manually in views for maximum control
-# }
-
-# # 3. CSRF Trusted Origins
-# CSRF_TRUSTED_ORIGINS = [
-#     "http://localhost:3000",
-# ]
+# COOKIE SECURITY (False for localhost, True for Production)
+SESSION_COOKIE_SECURE = False 
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SAMESITE = 'Lax'

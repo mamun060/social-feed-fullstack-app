@@ -2,15 +2,21 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useLogoutMutation } from '@/lib/features/api/apiSlice';
 
 const MobileBottomNav = () => {
+    const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
     const router = useRouter();
     const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-    const handleLogout = () => {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        router.push('/');
+    const handleLogout = async () => {
+        try {
+        await logout().unwrap();
+        router.push("/"); 
+        } catch (err) {
+        console.error("Logout failed", err);
+        router.push("/");
+        }
     };
 
     const handleUserNameClick = () => {

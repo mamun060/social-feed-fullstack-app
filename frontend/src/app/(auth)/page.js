@@ -20,22 +20,13 @@ const LoginPage = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrorMsg("");
-
-    try {
-      const res = await login(formData).unwrap();
-      localStorage.setItem("access_token", res.access);
-      localStorage.setItem("refresh_token", res.refresh);
-      router.push("/feed");
-    } catch (err) {
-      console.error("Login Failed:", err);
-      if (err.status === 401) {
-        setErrorMsg("Invalid username or password.");
-      } else {
-        setErrorMsg("Something went wrong. Please check your connection.");
+      e.preventDefault();
+      try {
+          await login(formData).unwrap();
+          router.push("/feed");
+      } catch (err) {
+          console.error("Login failed", err);
       }
-    }
   };
 
   return (
