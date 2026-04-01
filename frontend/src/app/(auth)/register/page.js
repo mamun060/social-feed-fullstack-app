@@ -14,7 +14,7 @@ const RegistrationPage = () => {
         email: '',
         password: '',
         confirm_password: ''
-    });
+    }); 
 
     const [errorMsg, setErrorMsg] = useState("");
 
