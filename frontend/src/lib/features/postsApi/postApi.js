@@ -62,7 +62,28 @@ const postApi = apiSlice.injectEndpoints({
         method: 'PUT',
         body: formData,
       }),
-      invalidatesTags: ['Post'],
+      async onQueryStarted({id, formData}, { dispatch, queryFulfilled }) {
+        try {
+          const { data: updatedPost } = await queryFulfilled;
+          const updatePost = (draft) => {
+            if (draft.results) {
+              const post = draft.results.find(p => p.id === id);
+              if (post) {
+                Object.assign(post, updatedPost);
+              }
+            } else {
+              const post = draft.find(p => p.id === id);
+              if (post) {
+                Object.assign(post, updatedPost);
+              }
+            }
+          };
+          dispatch(apiSlice.util.updateQueryData('getPosts', undefined, updatePost));
+          dispatch(apiSlice.util.updateQueryData('getMyPosts', undefined, updatePost));
+        } catch (err) {
+          // ignore
+        }
+      },
     }),
 
     deletePost: builder.mutation({
@@ -70,7 +91,23 @@ const postApi = apiSlice.injectEndpoints({
         url: `/posts/${id}/`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Post'],
+      async onQueryStarted(id, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          const updatePost = (draft) => {
+            if (draft.results) {
+              draft.results = draft.results.filter(p => p.id !== id);
+              draft.count -= 1;
+            } else {
+              draft = draft.filter(p => p.id !== id);
+            }
+          };
+          dispatch(apiSlice.util.updateQueryData('getPosts', undefined, updatePost));
+          dispatch(apiSlice.util.updateQueryData('getMyPosts', undefined, updatePost));
+        } catch (err) {
+          // ignore
+        }
+      },
     }),
 
     // Like

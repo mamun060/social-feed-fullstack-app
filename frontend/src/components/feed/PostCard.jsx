@@ -9,11 +9,15 @@ import { useDeletePostMutation, useLikePostMutation } from "@/lib/features/posts
 import { useGetUserQuery } from "@/lib/features/api/apiSlice";
 import { useInView } from 'react-intersection-observer';
 
-const PostCard = ({ postData , onPostDeleted }) => {
+const PostCard = ({ postData , onPostDeleted }) => {          
+  // Append only the strictly unique posts
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [isWhoLikedModalOpen, setIsWhoLikedModalOpen] = useState(false);
+
+  const [showComments, setShowComments] = useState(false);
+
   const [likePost, { isLoading: isLiking }] = useLikePostMutation();
   const [localIsLiked, setLocalIsLiked] = useState(postData?.is_liked || false);
   const [localLikesCount, setLocalLikesCount] = useState(postData?.likes_count || 0);
@@ -360,10 +364,11 @@ const PostCard = ({ postData , onPostDeleted }) => {
           )}
         </div>
         <div className="_feed_inner_timeline_total_reacts_txt">
-          <p className="_feed_inner_timeline_total_reacts_para1">
-            <a href="#0">
-              <span>{comments_count}</span> Comment
-            </a>
+          <p 
+            onClick={() => setShowComments(!showComments)}
+            className="_feed_inner_timeline_total_reacts_para1 hover:underline cursor-pointer"
+          >
+            <span>{comments_count}</span> Comment
           </p>
           <p className="_feed_inner_timeline_total_reacts_para2">
             {/* <span>{stats.shares}</span> Share */}
@@ -413,7 +418,10 @@ const PostCard = ({ postData , onPostDeleted }) => {
             </span>
           </span>
         </button>
-        <button className="_feed_inner_timeline_reaction_comment _feed_reaction">
+        <button 
+          className="_feed_inner_timeline_reaction_comment _feed_reaction"
+          onClick={() => setShowComments(!showComments)}
+        >
           <span className="_feed_inner_timeline_reaction_link">
             <span>
               <svg
@@ -465,8 +473,11 @@ const PostCard = ({ postData , onPostDeleted }) => {
       </div>
 
       {/* Comments Component */}
-      {/* <Comments postId={postData?.id} postAuthorId={authorObj?.id} />npm install react-intersection-observer */}
-    
+      {/* <Comments postId={postData?.id} postAuthorId={authorObj?.id} /> */}
+      {showComments && (
+        <Comments postId={postData?.id} postAuthorId={authorObj?.id} />
+      )}
+
     {/* delete confirmation modal */}
     {deleteConfirmOpen && (
       <div

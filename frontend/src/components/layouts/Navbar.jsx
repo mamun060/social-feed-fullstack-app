@@ -1,9 +1,10 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useDispatch } from 'react-redux';
 import { apiSlice, useGetUserQuery, useLogoutMutation } from '@/lib/features/api/apiSlice';
 import { useRouter } from 'next/navigation';
+import { useSearchPostsQuery } from '@/lib/features/postsApi/postApi';
 
 const Navbar = () => {
     const {data: user, isLoading, isError} = useGetUserQuery();
@@ -16,6 +17,39 @@ const Navbar = () => {
         setShowNotifications(!showNotifications);
         if (showProfileDropdown) setShowProfileDropdown(false);
     };
+
+    // search state and debouncing logic
+    const [searchTerm, setSearchTerm] = useState("");
+    const [debouncedTerm, setDebouncedTerm] = useState("");
+    const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
+    const searchRef = useRef(null);
+
+    // 1. Debounce Effect: Updates 'debouncedTerm' 500ms after user stops typing
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedTerm(searchTerm);
+        }, 500);
+
+        // Cleanup function clears the timeout if the user types again before 500ms
+        return () => clearTimeout(timer);
+    }, [searchTerm]);
+
+    // 2. RTK Query Hook: Only fetches if debouncedTerm has text
+    const { data: searchResults, isFetching: isSearching } = useSearchPostsQuery(debouncedTerm, {
+        skip: debouncedTerm.trim() === "", // Don't run query if search is empty
+    });
+
+    // 3. Handle clicks outside the search box to close the dropdown
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (searchRef.current && !searchRef.current.contains(event.target)) {
+                setIsSearchDropdownOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+    // --------------------------------------
 
     const toggleProfile = () => {
         setShowProfileDropdown(!showProfileDropdown);
@@ -44,6 +78,8 @@ const Navbar = () => {
                 <button className="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"> <span className="navbar-toggler-icon"></span>
                 </button>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                    
+{/*                     
                     <div className="_header_form ms-auto">
                         <form className="_header_form_grp">
                             <svg className="_header_form_svg" xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 17 17">
@@ -52,7 +88,86 @@ const Navbar = () => {
                             </svg>
                             <input className="form-control me-2 _inpt1" type="search" placeholder="input search text" aria-label="Search" />
                         </form>
+                    </div> */}
+                    {/* --- SEARCH COMPONENT --- */}
+                    <div className="_header_form ms-auto" ref={searchRef} style={{ position: 'relative' }}>
+                        <form 
+                            className="_header_form_grp" 
+                            onSubmit={(e) => e.preventDefault()} // Prevent page reload on enter
+                        >
+                            <svg className="_header_form_svg" xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 17 17">
+                                <circle cx="7" cy="7" r="6" stroke="#666" />
+                                <path stroke="#666" strokeLinecap="round" d="M16 16l-3-3" />
+                            </svg>
+                            <input 
+                                className="form-control me-2 _inpt1" 
+                                type="search" 
+                                placeholder="Search posts..." 
+                                aria-label="Search"
+                                value={searchTerm}
+                                onChange={(e) => {
+                                    setSearchTerm(e.target.value);
+                                    setIsSearchDropdownOpen(true);
+                                }}
+                                onFocus={() => {
+                                    if (searchTerm.trim() !== "") setIsSearchDropdownOpen(true);
+                                }}
+                            />
+                        </form>
+
+                        {/* Search Results Dropdown */}
+                        {isSearchDropdownOpen && searchTerm.trim() !== "" && (
+                            <div 
+                                className="_search_results_dropdown shadow" 
+                                style={{
+                                    position: 'absolute',
+                                    top: '100%',
+                                    left: 0,
+                                    width: '100%',
+                                    backgroundColor: '#fff',
+                                    borderRadius: '8px',
+                                    marginTop: '8px',
+                                    zIndex: 1000,
+                                    maxHeight: '300px',
+                                    overflowY: 'auto',
+                                    border: '1px solid #eee'
+                                }}
+                            >
+                                {isSearching ? (
+                                    <div className="p-3 text-center text-gray-500 text-sm">
+                                        Searching...
+                                    </div>
+                                ) : searchResults?.results && searchResults.results.length > 0 ? (
+                                    <ul className="list-unstyled mb-0 m-0 p-0">
+                                        {searchResults.results.map((post) => (
+                                            <li key={post.id} className="border-bottom">
+                                                {/* Update this Link destination based on your routing setup */}
+                                                <Link 
+                                                    href={`/posts/${post.id}`} 
+                                                    className="d-block p-3 text-decoration-none text-dark hover-bg-light"
+                                                    onClick={() => setIsSearchDropdownOpen(false)}
+                                                >
+                                                    <div className="fw-bold fs-6 mb-1 text-truncate">
+                                                        {post.author?.username || "Unknown"}
+                                                    </div>
+                                                    <div className="text-muted text-truncate" style={{ fontSize: '13px' }}>
+                                                        {post.content}
+                                                    </div>
+                                                </Link>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <div className="p-3 text-center text-muted text-sm">
+                                        No posts found for "{debouncedTerm}"
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
+                    {/* ------------------------ */}
+
+
                     <ul className="navbar-nav mb-2 mb-lg-0 _header_nav_list ms-auto _mar_r8">
                         <li className="nav-item _header_nav_item">
                             <Link href="/feed" className="nav-link _header_nav_link_active _header_nav_link" aria-current="page">

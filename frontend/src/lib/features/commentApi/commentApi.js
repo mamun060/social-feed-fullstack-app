@@ -8,7 +8,26 @@ const commentApi = apiSlice.injectEndpoints({
         method: 'POST',
         body: commentData,
       }),
-      invalidatesTags: ['Post' , 'Comment'],
+      async onQueryStarted(commentData, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          const updatePost = (draft) => {
+            if (draft.results) {
+              const post = draft.results.find(p => p.id === commentData.post);
+              if (post) {
+                post.comments_count += 1;
+              }
+            } else if (draft.id === commentData.post) {
+              draft.comments_count += 1;
+            }
+          };
+          dispatch(apiSlice.util.updateQueryData('getPosts', undefined, updatePost));
+          dispatch(apiSlice.util.updateQueryData('getMyPosts', undefined, updatePost));
+        } catch (err) {
+          // If failed, could decrement, but for simplicity, ignore
+        }
+      },
+      invalidatesTags: ['Comment'],
     }),
 
     getCommentsByPost: builder.query({
@@ -26,11 +45,33 @@ const commentApi = apiSlice.injectEndpoints({
     }),
 
     deleteComment: builder.mutation({
-      query: (id) => ({
+      query: ({id}) => ({
         url: `/comments/${id}/`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Post', 'Comment'],
+      async onQueryStarted({id, postId}, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          const updatePost = (draft) => {
+            if (draft.results) {
+              const post = draft.results.find(p => p.id === postId);
+              if (post) {
+                post.comments_count -= 1;
+              }
+            } else {
+              const post = draft.find(p => p.id === postId);
+              if (post) {
+                post.comments_count -= 1;
+              }
+            }
+          };
+          dispatch(apiSlice.util.updateQueryData('getPosts', undefined, updatePost));
+          dispatch(apiSlice.util.updateQueryData('getMyPosts', undefined, updatePost));
+        } catch (err) {
+          // If failed, could increment back, but ignore
+        }
+      },
+      invalidatesTags: ['Comment'],
     }),
 
     commentLikeUnlike: builder.mutation({

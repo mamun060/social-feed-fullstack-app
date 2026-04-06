@@ -109,7 +109,7 @@ const Comments = ({ postId, postAuthorId }) => {
 
   const handleDeleteComment = async () => {
     try {
-      await deleteComment(deleteConfirmId).unwrap();
+      await deleteComment({id: deleteConfirmId, postId}).unwrap();
       setDeleteConfirmId(null);
     } catch (err) {
       console.error("Failed to delete comment:", err);
