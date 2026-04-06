@@ -1,13 +1,13 @@
 "use client";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
 import EditPostModal from "./EditPostModal";
 import WhoLikedModal from "./WhoLikedModal";
 import Comments from "./Comments";
 import { useDeletePostMutation, useLikePostMutation } from "@/lib/features/postsApi/postApi";
 import { useGetUserQuery } from "@/lib/features/api/apiSlice";
+import { useInView } from 'react-intersection-observer';
 
 const PostCard = ({ postData , onPostDeleted }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -465,7 +465,7 @@ const PostCard = ({ postData , onPostDeleted }) => {
       </div>
 
       {/* Comments Component */}
-      <Comments postId={postData?.id} postAuthorId={authorObj?.id} />
+      {/* <Comments postId={postData?.id} postAuthorId={authorObj?.id} />npm install react-intersection-observer */}
     
     {/* delete confirmation modal */}
     {deleteConfirmOpen && (

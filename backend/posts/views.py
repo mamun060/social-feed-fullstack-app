@@ -3,6 +3,7 @@ from rest_framework import viewsets, permissions, status, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.pagination import PageNumberPagination
 from django.db.models import Q
 from .models import Post, Comment, PostLike, CommentLike
 from .serializers import PostSerializer, CommentSerializer, LikeUserSerializer
@@ -15,8 +16,9 @@ class IsPostAuthor(permissions.BasePermission):
 class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = PageNumberPagination
     # Scalability: Order by newest first
-    ordering = ['-created_at']
+    ordering = ['-created_at', '-id']
     filter_backends = [filters.SearchFilter]
     search_fields = ['content', 'author__username']
     
@@ -46,6 +48,11 @@ class PostViewSet(viewsets.ModelViewSet):
     def my_posts(self, request):
         """Get all posts created by the current user"""
         user_posts = Post.objects.filter(author=request.user).select_related('author').prefetch_related('likes', 'comments').order_by('-created_at')
+        page = self.paginate_queryset(user_posts)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
         serializer = self.get_serializer(user_posts, many=True)
         return Response(serializer.data)
 
@@ -72,6 +79,7 @@ class PostViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = None
     filter_backends = [filters.SearchFilter]
     search_fields = ['text', 'author__username']
 
