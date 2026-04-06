@@ -51,7 +51,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"jdoe\",\r\n    \"password\": \"securepassword123\",\r\n    \"email\": \"jdoe@example.com\",\r\n    \"first_name\": \"John\",\r\n    \"last_name\": \"Doe\"\r\n}",
+							"raw": "{\r\n    \"username\": \"test\",\r\n    \"email\": \"newusetesser@example.com\",\r\n    \"first_name\": \"New\",\r\n    \"last_name\": \"User\",\r\n    \"password\": \"mypassword123\",\r\n    \"confirm_password\": \"mypass/word123\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -398,7 +398,7 @@
 							"formdata": [
 								{
 									"key": "content\n",
-									"value": "update the content",
+									"value": "sdfsdfsadf",
 									"type": "text"
 								},
 								{
@@ -409,12 +409,12 @@
 								{
 									"key": "image",
 									"type": "file",
-									"src": "/C:/Users/obujr/Downloads/Gemini_Generated_Image_9cyrsc9cyrsc9cyr.png"
+									"src": "/E:/js-advance-practice/news-feed/frontend/public/images/card_ppl3.png"
 								}
 							]
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/api/v1/posts/15/",
+							"raw": "http://127.0.0.1:8000/api/v1/posts/9/",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -427,7 +427,7 @@
 								"api",
 								"v1",
 								"posts",
-								"15",
+								"9",
 								""
 							]
 						}
@@ -479,8 +479,36 @@
 				{
 					"name": "my posts",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/v1/posts/my_posts/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"posts",
+								"my_posts",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -756,18 +784,20 @@
 				{
 					"name": "comments under posts",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
-						"header": []
-					},
-					"response": []
-				},
-				{
-					"name": "post comment",
-					"request": {
-						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://127.0.0.1:8000/ //api/v1/comments/",
+							"raw": "http://127.0.0.1:8000/api/v1/comments/?post_id=3",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -777,8 +807,56 @@
 							],
 							"port": "8000",
 							"path": [
-								" ",
-								"",
+								"api",
+								"v1",
+								"comments",
+								""
+							],
+							"query": [
+								{
+									"key": "post_id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "post comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"post\": 3,\r\n  \"text\": \"This is a great post!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/v1/comments/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
 								"api",
 								"v1",
 								"comments",
@@ -836,10 +914,20 @@
 				{
 					"name": "delete comment",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://127.0.0.1:8000/api/v1/comments/{commentId}/",
+							"raw": "http://127.0.0.1:8000/api/v1/comments/1/",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -852,7 +940,7 @@
 								"api",
 								"v1",
 								"comments",
-								"{commentId}",
+								"1",
 								""
 							]
 						}

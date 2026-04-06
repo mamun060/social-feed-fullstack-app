@@ -2,9 +2,9 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Nov 25, 2025 at 01:04 PM
--- Server version: 10.6.24-MariaDB
+-- Host: localhost
+-- Generation Time: Apr 06, 2026 at 12:29 PM
+-- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -205,6 +205,9 @@ CREATE TABLE `django_session` (
 --
 
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
+('3ampcw9m0egj7lywvvakf91jpsho9fra', '.eJxVjDkOwjAUBe_iGlmJ7cT5lPScwfqbSQDZUpYKcXeIlALaNzPvZRJu65i2Rec0iTmb1px-N0J-aNmB3LHcquVa1nkiuyv2oIu9VtHn5XD_DkZcxm-dITtkIM9-aH3TZfUQqG8kRMcYYIg05KiC3jN0xL2gBoJO1Qk6BvP-APcNONE:1w7peC:aWOTqWspClCE2aHrqmXGRZ0zT2GLZYtiSYnSsqbUA5M', '2026-04-15 07:05:52.123359'),
+('95v1x47rync837qnipsk0makmdsu36fq', '.eJxVjDkOwjAUBe_iGlmJ7cT5lPScwfqbSQDZUpYKcXeIlALaNzPvZRJu65i2Rec0iTmb1px-N0J-aNmB3LHcquVa1nkiuyv2oIu9VtHn5XD_DkZcxm-dITtkIM9-aH3TZfUQqG8kRMcYYIg05KiC3jN0xL2gBoJO1Qk6BvP-APcNONE:1w7puK:c87gLbdscvAuyi_itwuFKs22r73xXhwUk8vMmFZ3vZc', '2026-04-15 07:22:32.096488'),
+('f4x7xmbtcd2dn2d8o83btmi2x3zgoid0', '.eJxVjEsOwiAUAO_C2hD-BZfuewbyHo9K1UBS2pXx7oakC93OTObNIhx7iUfPW1yJXZlkl1-GkJ65DkEPqPfGU6v7tiIfCT9t53Oj_Lqd7d-gQC9jK8AbGRwlMIasCmHxGYzIaARZ5yGBROeUlpIm5Z0OkpJeUCNaYWhiny_VTjeS:1w9b9J:R-mI1jYUJHGhEE2W5LwPY31gJfpNcseZCXW5XWORstk', '2026-04-20 04:01:17.115532'),
 ('vmhwk4nado9zpqoa6h9mdhzi2ldlmzgj', '.eJxVjE0OwiAYBe_C2pAiSMGl-56BfH9I1dCktCvj3W2TLnT7Zt68VYJ1KWltMqeR1VUZdfrdEOgpdQf8gHqfNE11mUfUu6IP2vQwsbxuh_sXKNDK9naC5D1Yw06C5J6Ngey7aHtLUaLvJDq8nHErOhaXgYJxwVok9hEjq88X_6Q4zA:1vNPsQ:XRyoGreLparIPNZ_zFJuZMnIBXU3cjIwu-XXfqn3mTI', '2025-12-08 06:16:42.757528');
 
 -- --------------------------------------------------------
@@ -235,7 +238,9 @@ INSERT INTO `posts_comment` (`id`, `text`, `created_at`, `author_id`, `parent_id
 (9, 'sdfsdf', '2025-11-25 10:16:22.868440', 3, 4, 10),
 (11, 'sdfasdf', '2025-11-25 10:17:57.423560', 3, 3, 10),
 (12, 'fsdf  ssd ssd', '2025-11-25 10:18:52.588104', 3, NULL, 10),
-(13, 'Nice', '2025-11-25 12:00:15.877529', 8, NULL, 10);
+(13, 'Nice', '2025-11-25 12:00:15.877529', 8, NULL, 10),
+(14, 'nice', '2026-04-06 09:40:41.677086', 3, NULL, 18),
+(15, 'cool', '2026-04-06 09:46:27.357025', 3, NULL, 18);
 
 -- --------------------------------------------------------
 
@@ -284,13 +289,19 @@ CREATE TABLE `posts_post` (
 --
 
 INSERT INTO `posts_post` (`id`, `content`, `image`, `visibility`, `created_at`, `updated_at`, `author_id`) VALUES
-(3, 'Page layouts look better with something in each section. Web page designers, content writers, and layout artists use lorem ipsum, also known as placeholder copy, to distinguish which areas on a page will hold advertisements, editorials, and filler before the final written content and website designs receive client approval.\nFun Lorem Ipsum text may appear in any size and font to simulate everything you create for your campaigns.\n\nPage layouts look better with something in each section. Web page designers, content writers, and layout artists use lorem ipsum, also known as placeholder copy, to distinguish which areas on a page will hold advertisements, editorials, and filler before the final written content and website designs receive client approval.\n\nFun Lorem Ipsum text may appear in any size and font to simulate everything you create for your campaigns.', 'post_images/card_ppl3_RqB8TmW.png', 'public', '2025-11-24 07:22:45.761553', '2025-11-24 07:22:45.761553', 3),
-(6, 'Controlled components in React are the components whose state and behaviors are managed by React components using states while the uncontrolled components manage their own state and control their behaviors with the help of DOM.\r\n\r\nWe will explore the differences between controlled and uncontrolled components in ReactJS, and how to decide which approach will best suit your project\'s need.', 'post_images/images.jpg', 'public', '2025-11-25 05:08:18.240038', '2025-11-25 06:10:33.271202', 3),
+(3, 'Page layouts look better with something in each section. Web page designers, content writers, and layout artists use lorem ipsum, also known as placeholder copy, to distinguish which areas on a page will hold advertisements, editorials, and filler before the final written content and website designs receive client approval.\r\nFun Lorem Ipsum text may appear in any size and font to simulate everything you create for your campaigns.\r\n\r\nPage layouts look better with something in each section. Web page designers, content writers, and layout artists use lorem ipsum, also known as placeholder copy, to distinguish which areas on a page will hold advertisements, editorials, and filler before the final written content and website designs receive client approval.\r\n\r\nFun Lorem Ipsum text may appear in any size and font to simulate everything you create for your campaigns.', 'post_images/1_5_19KagSHkV_ILlu-quMxQ.png', 'public', '2025-11-24 07:22:45.761553', '2026-04-06 04:14:22.986108', 3),
+(6, 'Controlled components in React are the components whose state and behaviors are managed by React components using states while the uncontrolled components manage their own state and control their behaviors with the help of DOM.\r\n\r\nWe will explore the differences between controlled and uncontrolled components in ReactJS, and how to decide which approach will best suit your project\'s need.', 'post_images/Whisk_0c3d9f07107b34581264ffd3e027d9e9dr.jpeg', 'public', '2025-11-25 05:08:18.240038', '2026-04-06 04:14:43.341999', 3),
 (9, 'sdfsdfsadf', 'post_images/card_ppl3_oeycMEX.png', 'public', '2025-11-25 05:19:51.243068', '2025-11-25 05:28:41.945129', 4),
 (10, 'Why do we use it?\r\nIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \'Content here, content here\', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for \'lorem ipsum\' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).', 'post_images/481975838_628277666728682_2991748604020119725_n.jpg', 'public', '2025-11-25 06:42:50.745214', '2025-11-25 06:42:50.745214', 3),
 (11, 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 'post_images/Image_1.png', 'public', '2025-11-25 10:37:19.205290', '2025-11-25 10:37:19.205290', 7),
 (12, 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 'post_images/Image_3.png', 'public', '2025-11-25 10:43:55.465099', '2025-11-25 10:44:20.203016', 5),
-(14, 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 'post_images/image_1_n1CfGGh.png', 'public', '2025-11-25 10:44:44.279606', '2025-11-25 10:44:44.279606', 5);
+(14, 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 'post_images/image_1_n1CfGGh.png', 'public', '2025-11-25 10:44:44.279606', '2025-11-25 10:44:44.279606', 5),
+(15, 'mamun test post', 'post_images/fotor_2023-2-16_17_12_31.png', 'public', '2026-04-06 04:13:51.392542', '2026-04-06 04:13:51.392577', 3),
+(16, 'The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum\" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.', 'post_images/images.png', 'public', '2026-04-06 07:55:05.570234', '2026-04-06 07:55:05.570283', 3),
+(17, 'The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum\" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.', 'post_images/download.jpeg', 'public', '2026-04-06 07:55:20.493452', '2026-04-06 07:55:20.493497', 3),
+(18, 'The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum\" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.', 'post_images/download_1.jpeg', 'public', '2026-04-06 07:55:31.362157', '2026-04-06 08:52:45.462987', 3),
+(19, 'Page layouts look better with something in each section. Web page designers, content writers, and layout artists use lorem ipsum, also known as placeholder copy, to distinguish which areas on a page will hold advertisements, editorials, and filler before the final written content and website designs receive client approval.\r\nFun Lorem Ipsum text may appear in any size and font to simulate everything you create for your campaigns.\r\n\r\nPage layouts look better with something in each section. Web page designers, content writers, and layout artists use lorem ipsum, also known as placeholder copy, to distinguish which areas on a page will hold advertisements, editorials, and filler before the final written content and website designs receive client approval.\r\n\r\nFun Lorem Ipsum text may appear in any size and font to simulate everything you create for your campaigns.', 'post_images/Login.png', 'public', '2026-04-06 09:51:51.199032', '2026-04-06 10:18:05.548135', 3),
+(22, 'Page layouts look better with something in each section. Web page designers, content writers, and layout artists use lorem ipsum, also known as placeholder copy, to distinguish which areas on a page will hold advertisements, editorials, and filler before the final written content and website designs receive client approval.\r\nFun Lorem Ipsum text may appear in any size and font to simulate everything you create for your campaigns.\r\n\r\nPage layouts look better with something in each section. Web page designers, content writers, and layout artists use lorem ipsum, also known as placeholder copy, to distinguish which areas on a page will hold advertisements, editorials, and filler before the final written content and website designs receive client approval.\r\n\r\nFun Lorem Ipsum text may appear in any size and font to simulate everything you create for your campaigns.', 'post_images/Whisk_0c3d9f07107b34581264ffd3e027d9e9dr_CKKpJ4T.jpeg', 'public', '2026-04-06 09:52:28.799533', '2026-04-06 10:10:52.728161', 3);
 
 -- --------------------------------------------------------
 
@@ -318,10 +329,13 @@ INSERT INTO `posts_postlike` (`id`, `created_at`, `post_id`, `user_id`) VALUES
 (7, '2025-11-25 06:58:22.441473', 9, 5),
 (8, '2025-11-25 06:58:25.562148', 6, 5),
 (9, '2025-11-25 06:58:28.018225', 3, 5),
-(12, '2025-11-25 09:48:48.307911', 3, 3),
-(13, '2025-11-25 10:19:06.419402', 6, 3),
 (14, '2025-11-25 12:00:02.975305', 11, 8),
-(15, '2025-11-25 12:00:06.973370', 10, 8);
+(15, '2025-11-25 12:00:06.973370', 10, 8),
+(16, '2025-11-26 05:38:54.337399', 14, 3),
+(17, '2026-04-01 07:47:45.729999', 12, 9),
+(23, '2026-04-06 09:42:22.003859', 18, 3),
+(25, '2026-04-06 10:17:36.805573', 22, 3),
+(26, '2026-04-06 10:17:39.244946', 19, 3);
 
 -- --------------------------------------------------------
 
@@ -348,14 +362,15 @@ CREATE TABLE `users_customuser` (
 --
 
 INSERT INTO `users_customuser` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `is_staff`, `is_active`, `date_joined`, `email`) VALUES
-(1, 'pbkdf2_sha256$1000000$jHJHb3J0jeX7s3EftG2GJ4$g33FxSaeUOo1Su0vZzZzgFPKIuRURqQ8//ouwmxv/PU=', '2025-11-24 06:16:42.755528', 1, 'admin', '', '', 1, 1, '2025-11-24 06:14:59.891519', 'almamun.dev21@gmail.com'),
+(1, 'pbkdf2_sha256$600000$RtBQZzrQahFAC5xWFmH0Qt$nxcKxldao/OJcGgNYSkx2vN8mVeoTL/2CWijGSzEQAA=', '2026-04-06 04:01:17.110441', 1, 'admin', '', '', 1, 1, '2025-11-24 06:14:59.891519', 'almamun.dev21@gmail.com'),
 (2, 'pbkdf2_sha256$1000000$lsX5ZJOlhBg6V88D922e47$Uwq16Kh4ebyKhDtjp/h0HuCVpdUCFOXdVPffD7urVNI=', NULL, 0, 'jdoe', 'John', 'Doe', 0, 1, '2025-11-24 06:27:59.470119', 'jdoe@example.com'),
-(3, 'pbkdf2_sha256$870000$SLx9P1czK3gJJnSh1AKzsc$KEGvNfXWoHj8UyVIRWZfU/+jxYPXTLGSioEOAyWWFNQ=', NULL, 0, 'mamun', 'AL', 'Mamun', 0, 1, '2025-11-24 06:29:02.631378', 'mamun@gmail.com'),
+(3, 'pbkdf2_sha256$600000$IYaKzAETDgMU3TxcSUjF3C$JkpPa6GGfmLisNvArhagtw5+4A99pyzPEw98MG/H/8o=', NULL, 0, 'mamun', 'AL', 'Mamun', 0, 1, '2025-11-24 06:29:02.631378', 'mamun@gmail.com'),
 (4, 'pbkdf2_sha256$870000$db6fmt091zMKd5subiRp1j$J/qsKUaHJNQI0b3wcaCY41diRZtGiL87mSet6NjGOqM=', NULL, 0, 'sourav', 'sourav', 'majumder', 0, 1, '2025-11-24 06:48:07.760113', 'sourav@gmail.com'),
 (5, 'pbkdf2_sha256$870000$y4qCXAUWwHor3OUfa07gHb$PsvvpMYRUj0M94N/x7mX5EGKxkUAJ4iO+VYl/LqDqZo=', NULL, 0, 'newuser', 'New', 'User', 0, 1, '2025-11-24 06:59:08.398179', 'newuser@example.com'),
 (6, 'pbkdf2_sha256$1000000$ibehY3B7kVxwCEN7BbtJsm$wxujg6C8BE5XU+sNqx28Jve8L1KP3XGQ5OM/lHjHpmk=', NULL, 0, 'nuwihibyri', 'Guy', 'Greer', 0, 1, '2025-11-24 11:41:36.665017', 'zemylok@mailinator.com'),
 (7, 'pbkdf2_sha256$870000$q1ecqPr1dWnvVaq6NOkYxg$7f6BeUZRWxUOpE4m50jRXS/wEZKKjlm1YnDPpTCEAy4=', NULL, 0, 'mehedi', 'Md', 'Mehedi', 0, 1, '2025-11-25 10:35:27.692960', 'mehedi@gmail.com'),
-(8, 'pbkdf2_sha256$870000$BARK7DsUdbICqGNiJb3NUV$ASYsybgQ9S0HJirat0Qq0IEpiFjuIgmrE9XlV5VM1ZE=', NULL, 0, 'aysha', 'mst', 'aysha', 0, 1, '2025-11-25 11:40:30.471740', 'a@gmail.com');
+(8, 'pbkdf2_sha256$870000$BARK7DsUdbICqGNiJb3NUV$ASYsybgQ9S0HJirat0Qq0IEpiFjuIgmrE9XlV5VM1ZE=', NULL, 0, 'aysha', 'mst', 'aysha', 0, 1, '2025-11-25 11:40:30.471740', 'a@gmail.com'),
+(9, 'pbkdf2_sha256$870000$8xBP8QqtHWEZNqezwNiHVs$C2b/X1OeTMYIF2sSSRbA13VENuxj04zzY7a4vh8BGJA=', NULL, 0, 'arishfa', 'arishfa', 'al mehnaz', 0, 1, '2026-04-01 07:18:07.472548', 'arishfa@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -536,7 +551,7 @@ ALTER TABLE `django_migrations`
 -- AUTO_INCREMENT for table `posts_comment`
 --
 ALTER TABLE `posts_comment`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `posts_commentlike`
@@ -548,19 +563,19 @@ ALTER TABLE `posts_commentlike`
 -- AUTO_INCREMENT for table `posts_post`
 --
 ALTER TABLE `posts_post`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `posts_postlike`
 --
 ALTER TABLE `posts_postlike`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `users_customuser`
 --
 ALTER TABLE `users_customuser`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `users_customuser_groups`
