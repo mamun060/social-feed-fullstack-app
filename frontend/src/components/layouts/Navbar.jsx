@@ -24,22 +24,20 @@ const Navbar = () => {
     const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
     const searchRef = useRef(null);
 
-    // 1. Debounce Effect: Updates 'debouncedTerm' 500ms after user stops typing
+    // Debounce Effect: Updates 'debouncedTerm' 500ms after user stops typing
     useEffect(() => {
         const timer = setTimeout(() => {
             setDebouncedTerm(searchTerm);
         }, 500);
-
-        // Cleanup function clears the timeout if the user types again before 500ms
         return () => clearTimeout(timer);
     }, [searchTerm]);
 
-    // 2. RTK Query Hook: Only fetches if debouncedTerm has text
+    // RTK Query Hook: Only fetches if debouncedTerm has text
     const { data: searchResults, isFetching: isSearching } = useSearchPostsQuery(debouncedTerm, {
-        skip: debouncedTerm.trim() === "", // Don't run query if search is empty
+        skip: debouncedTerm.trim() === "",
     });
 
-    // 3. Handle clicks outside the search box to close the dropdown
+    // Handle clicks outside the search box to close the dropdown
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -49,7 +47,6 @@ const Navbar = () => {
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
-    // --------------------------------------
 
     const toggleProfile = () => {
         setShowProfileDropdown(!showProfileDropdown);
